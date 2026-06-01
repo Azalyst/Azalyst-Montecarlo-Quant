@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-01 05:49 UTC",
-  "updated_iso": "2026-06-01T05:49:21.645661+00:00",
+  "updated": "2026-06-01 05:50 UTC",
+  "updated_iso": "2026-06-01T05:50:39.384786+00:00",
   "status": "active",
   "challenge": {
     "day": 1,
@@ -36,9 +36,22 @@
     "wins": 0,
     "losses": 0,
     "win_rate": 0.0,
-    "open": 0
+    "open": 1
   },
-  "positions": [],
+  "positions": [
+    {
+      "strategy": "quantx",
+      "symbol": "BTCUSD",
+      "side": "SELL",
+      "entry": 73324.0078125,
+      "stop": 73595.83309140323,
+      "target": 72780.35725469353,
+      "lots": 3.6788,
+      "risk": 1000.0,
+      "be": false,
+      "opened": "2026-06-01 05:50"
+    }
+  ],
   "closed": [],
   "by_strategy": {},
   "tape": [
@@ -52,11 +65,11 @@
     },
     {
       "sym": "XAUUSD",
-      "px": 4550.8
+      "px": 4549.9
     },
     {
       "sym": "NAS100",
-      "px": 30565.75
+      "px": 30569.75
     },
     {
       "sym": "SP500",
@@ -64,16 +77,20 @@
     },
     {
       "sym": "BTCUSD",
-      "px": 73426.9
+      "px": 73324.01
     },
     {
       "sym": "ETHUSD",
-      "px": 1996.44
+      "px": 1994.51
     }
   ],
   "equity_curve": [
     {
       "t": "2026-06-01T05:49",
+      "e": 100000.0
+    },
+    {
+      "t": "2026-06-01T05:50",
       "e": 100000.0
     }
   ]

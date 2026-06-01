@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "quantx-BTCUSD-1780293088004",
+    "strategy": "quantx",
+    "symbol": "BTCUSD",
+    "side": "SELL",
+    "entry": 73324.0078125,
+    "stop": 73595.83309140323,
+    "target": 72780.35725469353,
+    "units": 3.6788337127247566,
+    "lots": 3.6788337127247566,
+    "risk_usd": 1000.0,
+    "opened_at": "2026-06-01T05:50:39.384786+00:00",
+    "interval": "15m",
+    "initial_stop": 73595.83309140323,
+    "be_moved": false,
+    "status": "open",
+    "exit_price": null,
+    "closed_at": null,
+    "pnl_usd": 0.0,
+    "r_multiple": 0.0,
+    "exit_reason": ""
+  }
+]

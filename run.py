@@ -33,6 +33,7 @@ from core.notify import Notifier
 from core import papertrade as pt
 import strategies
 from report import write_report
+from dashboard import build_status
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SL_REASONS = {"sl"}
@@ -184,6 +185,7 @@ def main():
     save_positions(positions)
     save_sent(sent)
     write_report(acc, positions, now)
+    build_status(acc, positions, data.last_prices(), instruments, now)
     print(f"[done] equity ${acc.equity:,.2f} | day PnL ${acc.daily_realized_pnl:,.2f} | "
           f"open {len([p for p in positions if p.status=='open'])} | status {acc.status}")
 

@@ -1,1 +1,14 @@
-{"status":"active","balance":100000.0,"equity":100000.0,"net_pnl":0.0,"trades_total":0}
+{
+  "updated": "2026-06-01T05:49:21.645661+00:00",
+  "status": "active",
+  "balance": 100000.0,
+  "equity": 100000.0,
+  "net_pnl": 0.0,
+  "today_pnl": 0.0,
+  "trades_total": 0,
+  "wins": 0,
+  "losses": 0,
+  "win_rate": 0.0,
+  "open_positions": 0,
+  "by_strategy": {}
+}

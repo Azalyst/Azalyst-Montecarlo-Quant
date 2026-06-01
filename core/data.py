@@ -119,5 +119,14 @@ def fetch_ohlc(inst: dict, interval: str, bars: int = 300) -> pd.DataFrame:
     return df
 
 
+def last_prices() -> dict:
+    """Latest close per ticker from whatever was fetched this run (for the dashboard tape)."""
+    out = {}
+    for (ticker, _interval, _bars), df in _CACHE.items():
+        if df is not None and len(df):
+            out[ticker] = float(df["close"].iloc[-1])
+    return out
+
+
 def clear_cache():
     _CACHE.clear()

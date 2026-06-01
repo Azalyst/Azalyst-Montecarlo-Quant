@@ -1,0 +1,80 @@
+{
+  "updated": "2026-06-01 05:49 UTC",
+  "updated_iso": "2026-06-01T05:49:21.645661+00:00",
+  "status": "active",
+  "challenge": {
+    "day": 1,
+    "total": 30,
+    "start": "2026-06-01",
+    "end": "2026-06-30"
+  },
+  "account": {
+    "size": 100000.0,
+    "balance": 100000.0,
+    "equity": 100000.0,
+    "net_pnl": 0.0,
+    "net_pnl_pct": 0.0,
+    "today_pnl": 0.0,
+    "peak_balance": 100000.0
+  },
+  "objectives": {
+    "daily": {
+      "used": 0.0,
+      "limit": 5000.0,
+      "remaining": 5000.0,
+      "threshold": 95000.0
+    },
+    "overall": {
+      "used": 0.0,
+      "limit": 10000.0,
+      "remaining": 10000.0,
+      "threshold": 90000.0
+    }
+  },
+  "stats": {
+    "trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate": 0.0,
+    "open": 0
+  },
+  "positions": [],
+  "closed": [],
+  "by_strategy": {},
+  "tape": [
+    {
+      "sym": "EURUSD",
+      "px": 1.16564
+    },
+    {
+      "sym": "GBPUSD",
+      "px": 1.34649
+    },
+    {
+      "sym": "XAUUSD",
+      "px": 4550.8
+    },
+    {
+      "sym": "NAS100",
+      "px": 30565.75
+    },
+    {
+      "sym": "SP500",
+      "px": 7595.75
+    },
+    {
+      "sym": "BTCUSD",
+      "px": 73426.9
+    },
+    {
+      "sym": "ETHUSD",
+      "px": 1996.44
+    }
+  ],
+  "equity_curve": [
+    {
+      "t": "2026-06-01T05:49",
+      "e": 100000.0
+    }
+  ]
+}

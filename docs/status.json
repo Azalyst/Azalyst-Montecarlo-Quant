@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-01 16:45 UTC",
-  "updated_iso": "2026-06-01T16:45:20.953098+00:00",
+  "updated": "2026-06-01 20:48 UTC",
+  "updated_iso": "2026-06-01T20:48:26.204154+00:00",
   "status": "active",
   "challenge": {
     "day": 1,
@@ -10,11 +10,11 @@
   },
   "account": {
     "size": 100000.0,
-    "balance": 102000.0,
-    "equity": 102000.0,
-    "net_pnl": 2000.0,
-    "net_pnl_pct": 2.0,
-    "today_pnl": 2000.0,
+    "balance": 100000.0,
+    "equity": 100000.0,
+    "net_pnl": 0.0,
+    "net_pnl_pct": 0.0,
+    "today_pnl": 0.0,
     "peak_balance": 102000.0
   },
   "objectives": {
@@ -32,39 +32,47 @@
     }
   },
   "stats": {
-    "trades": 1,
+    "trades": 3,
     "wins": 1,
-    "losses": 0,
-    "win_rate": 100.0,
-    "open": 2
+    "losses": 2,
+    "win_rate": 33.3,
+    "open": 1
   },
   "positions": [
     {
-      "strategy": "smt_divergence",
-      "symbol": "BTCUSD",
-      "side": "SELL",
-      "entry": 71222.90625,
-      "stop": 71534.890625,
-      "target": 70598.9375,
-      "lots": 3.2053,
+      "strategy": "ema5",
+      "symbol": "NAS100",
+      "side": "BUY",
+      "entry": 30556.25,
+      "stop": 30539.5,
+      "target": 30606.5,
+      "lots": 59.7015,
       "risk": 1000.0,
       "be": false,
-      "opened": "2026-06-01 16:45"
-    },
+      "opened": "2026-06-01 20:48"
+    }
+  ],
+  "closed": [
     {
       "strategy": "quantx",
       "symbol": "BTCUSD",
       "side": "SELL",
-      "entry": 71222.90625,
-      "stop": 71657.32008224695,
-      "target": 70354.0785855061,
-      "lots": 2.302,
-      "risk": 1000.0,
-      "be": false,
-      "opened": "2026-06-01 16:45"
-    }
-  ],
-  "closed": [
+      "exit": 71657.32008224695,
+      "reason": "sl",
+      "pnl": -1000.0,
+      "r": -1.0,
+      "closed": "2026-06-01 17:30"
+    },
+    {
+      "strategy": "smt_divergence",
+      "symbol": "BTCUSD",
+      "side": "SELL",
+      "exit": 71534.890625,
+      "reason": "sl",
+      "pnl": -1000.0,
+      "r": -1.0,
+      "closed": "2026-06-01 17:15"
+    },
     {
       "strategy": "quantx",
       "symbol": "BTCUSD",
@@ -78,27 +86,32 @@
   ],
   "by_strategy": {
     "quantx": {
-      "trades": 1,
+      "trades": 2,
       "wins": 1,
-      "pnl": 2000.0
+      "pnl": 1000.0
+    },
+    "smt_divergence": {
+      "trades": 1,
+      "wins": 0,
+      "pnl": -1000.0
     }
   },
   "tape": [
     {
       "sym": "EURUSD",
-      "px": 1.16252
+      "px": 1.16374
     },
     {
       "sym": "GBPUSD",
-      "px": 1.34483
+      "px": 1.34584
     },
     {
       "sym": "XAUUSD",
-      "px": 4499.5
+      "px": 4513.8
     },
     {
       "sym": "NAS100",
-      "px": 30533.75
+      "px": 30555.0
     },
     {
       "sym": "SP500",
@@ -106,11 +119,11 @@
     },
     {
       "sym": "BTCUSD",
-      "px": 71222.91
+      "px": 71504.0
     },
     {
       "sym": "ETHUSD",
-      "px": 1968.69
+      "px": 2004.98
     }
   ],
   "equity_curve": [
@@ -129,6 +142,10 @@
     {
       "t": "2026-06-01T16:45",
       "e": 102000.0
+    },
+    {
+      "t": "2026-06-01T20:48",
+      "e": 100000.0
     }
   ]
 }

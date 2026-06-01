@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-01 05:50 UTC",
-  "updated_iso": "2026-06-01T05:50:39.384786+00:00",
+  "updated": "2026-06-01 10:59 UTC",
+  "updated_iso": "2026-06-01T10:59:40.207813+00:00",
   "status": "active",
   "challenge": {
     "day": 1,
@@ -10,12 +10,12 @@
   },
   "account": {
     "size": 100000.0,
-    "balance": 100000.0,
-    "equity": 100000.0,
-    "net_pnl": 0.0,
-    "net_pnl_pct": 0.0,
-    "today_pnl": 0.0,
-    "peak_balance": 100000.0
+    "balance": 102000.0,
+    "equity": 102000.0,
+    "net_pnl": 2000.0,
+    "net_pnl_pct": 2.0,
+    "today_pnl": 2000.0,
+    "peak_balance": 102000.0
   },
   "objectives": {
     "daily": {
@@ -32,44 +32,48 @@
     }
   },
   "stats": {
-    "trades": 0,
-    "wins": 0,
+    "trades": 1,
+    "wins": 1,
     "losses": 0,
-    "win_rate": 0.0,
-    "open": 1
+    "win_rate": 100.0,
+    "open": 0
   },
-  "positions": [
+  "positions": [],
+  "closed": [
     {
       "strategy": "quantx",
       "symbol": "BTCUSD",
       "side": "SELL",
-      "entry": 73324.0078125,
-      "stop": 73595.83309140323,
-      "target": 72780.35725469353,
-      "lots": 3.6788,
-      "risk": 1000.0,
-      "be": false,
-      "opened": "2026-06-01 05:50"
+      "exit": 72780.35725469353,
+      "reason": "tp",
+      "pnl": 2000.0,
+      "r": 2.0,
+      "closed": "2026-06-01 07:30"
     }
   ],
-  "closed": [],
-  "by_strategy": {},
+  "by_strategy": {
+    "quantx": {
+      "trades": 1,
+      "wins": 1,
+      "pnl": 2000.0
+    }
+  },
   "tape": [
     {
       "sym": "EURUSD",
-      "px": 1.16564
+      "px": 1.16509
     },
     {
       "sym": "GBPUSD",
-      "px": 1.34649
+      "px": 1.34633
     },
     {
       "sym": "XAUUSD",
-      "px": 4549.9
+      "px": 4539.3
     },
     {
       "sym": "NAS100",
-      "px": 30569.75
+      "px": 30504.25
     },
     {
       "sym": "SP500",
@@ -77,11 +81,11 @@
     },
     {
       "sym": "BTCUSD",
-      "px": 73324.01
+      "px": 72652.01
     },
     {
       "sym": "ETHUSD",
-      "px": 1994.51
+      "px": 1982.18
     }
   ],
   "equity_curve": [
@@ -92,6 +96,10 @@
     {
       "t": "2026-06-01T05:50",
       "e": 100000.0
+    },
+    {
+      "t": "2026-06-01T10:59",
+      "e": 102000.0
     }
   ]
 }

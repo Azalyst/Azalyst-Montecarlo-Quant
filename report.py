@@ -1,4 +1,8 @@
-"""Write the running PnL report (markdown + json) into reports/."""
+"""Write the running PnL report (markdown + json) into reports/.
+
+Each strategy is its own isolated FundingPips challenge, so the report is a league
+table of independent books (PASSED / FAILED / ACTIVE) plus the trade ledger.
+"""
 from __future__ import annotations
 import os
 import json
@@ -7,57 +11,64 @@ import datetime as dt
 ROOT = os.path.dirname(os.path.abspath(__file__))
 REPORTS = os.path.join(ROOT, "reports")
 
+_BADGE = {"active": "ACTIVE", "passed": "PASSED", "failed": "FAILED"}
 
-def write_report(acc, positions, now: dt.datetime):
+
+def write_report(books, positions, rules, now: dt.datetime):
     os.makedirs(REPORTS, exist_ok=True)
     closed = [p for p in positions if p.status == "closed"]
     open_ = [p for p in positions if p.status == "open"]
 
-    by_strat = {}
-    for p in closed:
-        s = by_strat.setdefault(p.strategy, {"trades": 0, "wins": 0, "pnl": 0.0})
-        s["trades"] += 1
-        s["wins"] += 1 if p.pnl_usd >= 0 else 0
-        s["pnl"] += p.pnl_usd
+    book_rows = []
+    for name, b in books.items():
+        net = b.balance - b.account_size
+        book_rows.append({
+            "strategy": name,
+            "status": b.status,
+            "failed_reason": b.failed_reason,
+            "balance": round(b.balance, 2),
+            "equity": round(b.equity, 2),
+            "net_pnl": round(net, 2),
+            "net_pnl_pct": round(net / b.account_size * 100, 2),
+            "trades": b.trades_total,
+            "wins": b.wins,
+            "losses": b.losses,
+            "win_rate": round(100 * b.wins / b.trades_total, 1) if b.trades_total else 0.0,
+        })
 
     summary = {
         "updated": now.isoformat(),
-        "status": acc.status,
-        "balance": round(acc.balance, 2),
-        "equity": round(acc.equity, 2),
-        "net_pnl": round(acc.balance - acc.account_size, 2),
-        "today_pnl": round(acc.daily_realized_pnl, 2),
-        "trades_total": acc.trades_total,
-        "wins": acc.wins,
-        "losses": acc.losses,
-        "win_rate": round(100 * acc.wins / acc.trades_total, 1) if acc.trades_total else 0.0,
+        "model": "per-strategy isolated challenges",
+        "account_size_each": rules.account_size,
+        "profit_target_pct": rules.profit_target_pct,
+        "passed": sum(1 for r in book_rows if r["status"] == "passed"),
+        "failed": sum(1 for r in book_rows if r["status"] == "failed"),
+        "active": sum(1 for r in book_rows if r["status"] == "active"),
         "open_positions": len(open_),
-        "by_strategy": by_strat,
+        "books": book_rows,
     }
     with open(os.path.join(REPORTS, "report.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
     lines = [
-        "# Azalyst FundingPips - Paper PnL",
-        f"_updated {now:%Y-%m-%d %H:%M UTC}_  |  status: **{acc.status}**",
+        "# Azalyst FundingPips - Per-Strategy Challenges",
+        f"_updated {now:%Y-%m-%d %H:%M UTC}_",
         "",
-        "| Metric | Value |",
-        "|---|---|",
-        f"| Balance | ${acc.balance:,.2f} |",
-        f"| Equity (incl. open) | ${acc.equity:,.2f} |",
-        f"| Net PnL | ${acc.balance - acc.account_size:,.2f} |",
-        f"| Today PnL | ${acc.daily_realized_pnl:,.2f} |",
-        f"| Trades | {acc.trades_total}  (W {acc.wins} / L {acc.losses}) |",
-        f"| Win rate | {summary['win_rate']}% |",
-        f"| Open positions | {len(open_)} |",
+        f"Each strategy runs its own **${rules.account_size:,.0f}** challenge "
+        f"(pass +{rules.profit_target_pct:g}%, fail -{rules.max_overall_loss/rules.account_size*100:g}% "
+        f"overall or -{rules.max_daily_loss/rules.account_size*100:g}% daily). "
+        f"Passed {summary['passed']} / Failed {summary['failed']} / Active {summary['active']}.",
         "",
-        "## By strategy",
-        "| Strategy | Trades | Win% | PnL |",
-        "|---|---|---|---|",
+        "| Strategy | Status | Balance | Net PnL | Trades | Win% |",
+        "|---|---|---|---|---|---|",
     ]
-    for s, v in sorted(by_strat.items()):
-        wr = round(100 * v["wins"] / v["trades"], 0) if v["trades"] else 0
-        lines.append(f"| {s} | {v['trades']} | {wr:g}% | ${v['pnl']:,.2f} |")
+    order = {"passed": 0, "active": 1, "failed": 2}
+    for r in sorted(book_rows, key=lambda x: (order.get(x["status"], 3), -x["net_pnl"])):
+        badge = _BADGE.get(r["status"], r["status"].upper())
+        if r["status"] == "failed" and r["failed_reason"]:
+            badge += f" ({r['failed_reason']})"
+        lines.append(f"| {r['strategy']} | {badge} | ${r['balance']:,.0f} | "
+                     f"${r['net_pnl']:,.2f} ({r['net_pnl_pct']:+g}%) | {r['trades']} | {r['win_rate']}% |")
 
     if open_:
         lines += ["", "## Open positions",

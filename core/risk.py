@@ -8,7 +8,7 @@ and
 """
 from __future__ import annotations
 import datetime as dt
-from .state import AccountState
+from .state import Book
 
 
 class FundingPipsRules:
@@ -18,6 +18,7 @@ class FundingPipsRules:
         self.account_size = float(a["size"])
         self.max_daily_loss = float(a["max_daily_loss"])
         self.max_overall_loss = float(a["max_overall_loss"])
+        self.profit_target_pct = float(a.get("profit_target_pct", 8.0))
         self.reset_hour = int(a["daily_reset_utc_hour"])
         self.start = dt.date.fromisoformat(a["challenge_start"])
         self.end = dt.date.fromisoformat(a["challenge_end"])
@@ -64,6 +65,11 @@ class FundingPipsRules:
     def overall_floor(self) -> float:
         return self.account_size - self.max_overall_loss   # $90,000
 
+    @property
+    def pass_threshold(self) -> float:
+        # balance at/above this = challenge PASSED (e.g. +8% -> $108,000)
+        return self.account_size * (1.0 + self.profit_target_pct / 100.0)
+
     def daily_budget(self) -> float:
         return self.max_daily_loss * self.buffer
 
@@ -71,7 +77,7 @@ class FundingPipsRules:
         # usable floor with safety buffer
         return self.account_size - self.max_overall_loss * self.buffer
 
-    def gate(self, acc: AccountState, worst_case_open: float, new_risk: float,
+    def gate(self, acc: Book, worst_case_open: float, new_risk: float,
              now: dt.datetime) -> tuple[bool, str]:
         if acc.status != "active":
             return False, f"account {acc.status}"

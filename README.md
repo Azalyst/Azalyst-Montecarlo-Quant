@@ -1,11 +1,13 @@
 # Azalyst-FundingPips-Signals
 
-Azalyst FundingPips is an autonomous, multi-strategy signal engine built to operate a
-prop-firm evaluation account with institutional discipline. It runs six independent
-trading playbooks across FX, metals, index futures, and crypto, generates BUY/SELL
-signals on a fixed cron, and **paper-trades every signal under live FundingPips risk
-constraints** — producing an exact, rule-safe trade for the operator to mirror and a
-fully transparent, cross-validated track record.
+Azalyst FundingPips is an autonomous, multi-strategy signal engine built to operate
+prop-firm evaluations with institutional discipline. It runs six independent trading
+playbooks across FX, metals, index futures, and crypto, generates BUY/SELL signals on
+a fixed cron, and **paper-trades each strategy in its own isolated $100,000 FundingPips
+challenge** — every strategy carries its own balance, daily/maximum-loss budget and
+PASSED / FAILED / ACTIVE status, so a losing playbook fails on its own book without
+dragging the others down. The result is an exact, rule-safe trade for the operator to
+mirror and a fully transparent, per-strategy track record.
 
 The platform is entirely serverless: discovery, risk-gating, execution simulation,
 Discord dispatch, and dashboard publication all run from a single GitHub Actions
@@ -19,10 +21,15 @@ Live Intelligence Dashboard: [https://azalyst.github.io/Azalyst-FundingPips-Sign
   5 EMA mean-reversion, Ethereum Blueprint, SMT Divergence, JadeCap Liquidity, QUANT-X
   consensus) run in parallel, each gated to the instruments, timeframes, and trading
   sessions its source playbook specifies.
-- **Rule-Safe by Construction**: Every signal is sized to risk exactly 1% and is
-  *blocked before entry* unless `realized loss today + worst-case open risk + this
-  trade's risk` stays inside the $5,000 daily and $10,000 maximum loss budgets. The
-  FundingPips rules cannot be broken even if every open stop is hit simultaneously.
+- **Isolated Per-Strategy Challenges**: Each of the six strategies runs its own
+  independent $100,000 challenge. A strategy is marked **FAILED** the moment its book
+  breaches the −10% maximum-loss floor ($90,000) or the −5% daily-loss limit, and
+  **PASSED** when its balance reaches the +8% profit target ($108,000); failed and
+  passed books stop trading. Every result is shown live on the dashboard.
+- **Rule-Safe by Construction**: Every signal is sized to risk exactly 1% of its book
+  and is *blocked before entry* unless `realized loss today + worst-case open risk +
+  this trade's risk` stays inside that book's $5,000 daily and $10,000 maximum loss
+  budgets. The FundingPips rules cannot be broken even if every open stop is hit.
 - **Session & Structure Fidelity**: Session gates are enforced to the playbook letter —
   Ethereum Blueprint trades only the first three hours of the Asia session; JadeCap
   only inside the New York killzone (09:30–11:30 ET, DST-aware). Liquidity sweeps,
@@ -30,9 +37,10 @@ Live Intelligence Dashboard: [https://azalyst.github.io/Azalyst-FundingPips-Sign
 - **Noise & Leverage Discipline**: A per-instrument minimum-stop filter rejects
   sub-noise stops (the 5 EMA "minimum SL" rule), and a 30× notional cap prevents a tight
   stop from producing an un-mirrorable position — both enforced before any trade opens.
-- **Transparent Track Record**: A break-even-aware paper book commits its full state and
-  PnL ledger back to the repository each run and renders a live, Bloomberg-style
-  dashboard, so the simulated record is auditable end to end.
+- **Transparent Track Record**: Break-even-aware paper books — one per strategy — commit
+  their full state and PnL ledger back to the repository each run and render a live,
+  Bloomberg-style dashboard of all six challenges, so the simulated record is auditable
+  end to end.
 
 ## Strategies
 

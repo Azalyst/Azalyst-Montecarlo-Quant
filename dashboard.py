@@ -1,4 +1,9 @@
-"""Build docs/status.json - the payload the GitHub Pages dashboard reads."""
+"""Build docs/status.json - the payload the GitHub Pages dashboard reads.
+
+Each strategy is an isolated FundingPips challenge. The dashboard renders one card
+per strategy (its own balance, daily/overall loss bars, profit-target progress and a
+PASSED / FAILED / ACTIVE badge) plus a fleet roll-up across all books.
+"""
 from __future__ import annotations
 import os
 import json
@@ -7,14 +12,12 @@ import datetime as dt
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 STATE = os.path.join(ROOT, "state")
-ACCOUNT_SIZE = 100000.0
-MAX_DAILY = 5000.0
-MAX_OVERALL = 10000.0
 CHALLENGE_START = dt.date(2026, 6, 1)
 CHALLENGE_END = dt.date(2026, 6, 30)
 
 
 def _equity_curve(equity: float, now: dt.datetime) -> list:
+    """Fleet equity curve (sum of all book equities)."""
     path = os.path.join(STATE, "equity_curve.json")
     curve = []
     if os.path.exists(path):
@@ -34,24 +37,67 @@ def _equity_curve(equity: float, now: dt.datetime) -> list:
     return curve
 
 
-def build_status(acc, positions, prices: dict, instruments: dict, now: dt.datetime):
+def build_status(books, positions, rules, prices: dict, instruments: dict, now: dt.datetime):
     os.makedirs(DOCS, exist_ok=True)
     open_ = [p for p in positions if p.status == "open"]
     closed = [p for p in positions if p.status == "closed"]
 
-    by_strat = {}
-    for p in closed:
-        s = by_strat.setdefault(p.strategy, {"trades": 0, "wins": 0, "pnl": 0.0})
-        s["trades"] += 1
-        s["wins"] += 1 if p.pnl_usd >= 0 else 0
-        s["pnl"] += p.pnl_usd
+    size = rules.account_size
+    max_daily = rules.max_daily_loss
+    max_overall = rules.max_overall_loss
+    target_usd = rules.pass_threshold
 
-    daily_loss_used = max(0.0, acc.today_start_equity - acc.equity)
-    overall_loss_used = max(0.0, ACCOUNT_SIZE - acc.equity)
+    open_by_strat = {}
+    for p in open_:
+        open_by_strat.setdefault(p.strategy, 0)
+        open_by_strat[p.strategy] += 1
+
+    book_cards = []
+    fleet_balance = fleet_equity = fleet_trades = fleet_wins = fleet_losses = 0
+    for name, b in books.items():
+        net = b.balance - b.account_size
+        daily_used = max(0.0, b.today_start_equity - b.equity)
+        overall_used = max(0.0, b.account_size - b.equity)
+        progress = max(0.0, min(100.0, net / (target_usd - b.account_size) * 100)) if target_usd > b.account_size else 0.0
+        book_cards.append({
+            "strategy": name,
+            "status": b.status,
+            "failed_reason": b.failed_reason,
+            "resolved_at": (b.resolved_at or "")[:16].replace("T", " "),
+            "size": b.account_size,
+            "balance": round(b.balance, 2),
+            "equity": round(b.equity, 2),
+            "net_pnl": round(net, 2),
+            "net_pnl_pct": round(net / b.account_size * 100, 2),
+            "today_pnl": round(b.daily_realized_pnl, 2),
+            "peak_balance": round(b.peak_balance, 2),
+            "trades": b.trades_total,
+            "wins": b.wins,
+            "losses": b.losses,
+            "win_rate": round(100 * b.wins / b.trades_total, 1) if b.trades_total else 0.0,
+            "open": open_by_strat.get(name, 0),
+            "daily": {"used": round(daily_used, 2), "limit": max_daily,
+                      "remaining": round(max(0.0, max_daily - daily_used), 2)},
+            "overall": {"used": round(overall_used, 2), "limit": max_overall,
+                        "remaining": round(max(0.0, max_overall - overall_used), 2)},
+            "target": {"usd": target_usd, "pct": rules.profit_target_pct,
+                       "progress": round(progress, 1)},
+        })
+        fleet_balance += b.balance
+        fleet_equity += b.equity
+        fleet_trades += b.trades_total
+        fleet_wins += b.wins
+        fleet_losses += b.losses
+
+    # order: passed first, then active (best PnL), then failed
+    order = {"passed": 0, "active": 1, "failed": 2}
+    book_cards.sort(key=lambda c: (order.get(c["status"], 3), -c["net_pnl"]))
+
+    n_books = len(books)
+    fleet_size = size * n_books
     day_num = (now.date() - CHALLENGE_START).days + 1
     total_days = (CHALLENGE_END - CHALLENGE_START).days + 1
 
-    # ticker tape: map configured instruments -> latest price we fetched this run
     tape = []
     for sym, cfg in instruments.items():
         px = prices.get(cfg["ticker"])
@@ -61,31 +107,27 @@ def build_status(acc, positions, prices: dict, instruments: dict, now: dt.dateti
     status = {
         "updated": now.strftime("%Y-%m-%d %H:%M UTC"),
         "updated_iso": now.isoformat(),
-        "status": acc.status,
+        "model": "per-strategy",
         "challenge": {"day": max(1, day_num), "total": total_days,
                       "start": CHALLENGE_START.isoformat(), "end": CHALLENGE_END.isoformat()},
-        "account": {
-            "size": ACCOUNT_SIZE,
-            "balance": round(acc.balance, 2),
-            "equity": round(acc.equity, 2),
-            "net_pnl": round(acc.balance - ACCOUNT_SIZE, 2),
-            "net_pnl_pct": round((acc.balance - ACCOUNT_SIZE) / ACCOUNT_SIZE * 100, 2),
-            "today_pnl": round(acc.daily_realized_pnl, 2),
-            "peak_balance": round(acc.peak_balance, 2),
-        },
-        "objectives": {
-            "daily": {"used": round(daily_loss_used, 2), "limit": MAX_DAILY,
-                      "remaining": round(max(0.0, MAX_DAILY - daily_loss_used), 2),
-                      "threshold": round(acc.today_start_equity - MAX_DAILY, 2)},
-            "overall": {"used": round(overall_loss_used, 2), "limit": MAX_OVERALL,
-                        "remaining": round(max(0.0, MAX_OVERALL - overall_loss_used), 2),
-                        "threshold": ACCOUNT_SIZE - MAX_OVERALL},
-        },
-        "stats": {
-            "trades": acc.trades_total, "wins": acc.wins, "losses": acc.losses,
-            "win_rate": round(100 * acc.wins / acc.trades_total, 1) if acc.trades_total else 0.0,
+        "rules": {"size": size, "max_daily": max_daily, "max_overall": max_overall,
+                  "target_usd": target_usd, "target_pct": rules.profit_target_pct,
+                  "floor": rules.overall_floor},
+        "fleet": {
+            "books": n_books,
+            "passed": sum(1 for c in book_cards if c["status"] == "passed"),
+            "failed": sum(1 for c in book_cards if c["status"] == "failed"),
+            "active": sum(1 for c in book_cards if c["status"] == "active"),
+            "size_total": fleet_size,
+            "balance_total": round(fleet_balance, 2),
+            "equity_total": round(fleet_equity, 2),
+            "net_pnl": round(fleet_balance - fleet_size, 2),
+            "net_pnl_pct": round((fleet_balance - fleet_size) / fleet_size * 100, 2) if fleet_size else 0.0,
+            "trades": fleet_trades, "wins": fleet_wins, "losses": fleet_losses,
+            "win_rate": round(100 * fleet_wins / fleet_trades, 1) if fleet_trades else 0.0,
             "open": len(open_),
         },
+        "books": book_cards,
         "positions": [
             {"strategy": p.strategy, "symbol": p.symbol, "side": p.side,
              "entry": p.entry, "stop": p.stop, "target": p.target,
@@ -98,11 +140,10 @@ def build_status(acc, positions, prices: dict, instruments: dict, now: dt.dateti
              "exit": p.exit_price, "reason": p.exit_reason,
              "pnl": round(p.pnl_usd, 2), "r": p.r_multiple,
              "closed": (p.closed_at or "")[:16].replace("T", " ")}
-            for p in closed[-25:][::-1]
+            for p in closed[-40:][::-1]
         ],
-        "by_strategy": by_strat,
         "tape": tape,
-        "equity_curve": _equity_curve(acc.equity, now),
+        "equity_curve": _equity_curve(fleet_equity, now),
     }
     with open(os.path.join(DOCS, "status.json"), "w") as f:
         json.dump(status, f, indent=2)

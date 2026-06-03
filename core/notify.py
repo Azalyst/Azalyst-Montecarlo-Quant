@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import requests
 from .models import Signal, Position
-from .state import AccountState
+from .state import Book
 
 GREEN = 0x2ECC71
 RED = 0xE74C3C
@@ -35,12 +35,12 @@ class Notifier:
         except Exception as e:
             print(f"[discord] send failed: {e}")
 
-    def _acct_footer(self, acc: AccountState) -> dict:
-        daily_rem = acc.today_start_equity - acc.equity
-        return {"text": (f"Equity ${acc.equity:,.0f} | Day PnL ${acc.daily_realized_pnl:,.0f} | "
-                         f"Bal ${acc.balance:,.0f} | W/L {acc.wins}/{acc.losses}")}
+    def _acct_footer(self, acc: Book) -> dict:
+        return {"text": (f"[{acc.strategy} book / {acc.status}] Equity ${acc.equity:,.0f} | "
+                         f"Day PnL ${acc.daily_realized_pnl:,.0f} | Bal ${acc.balance:,.0f} | "
+                         f"W/L {acc.wins}/{acc.losses}")}
 
-    def signal(self, sig: Signal, pos: Position, acc: AccountState):
+    def signal(self, sig: Signal, pos: Position, acc: Book):
         color = GREEN if sig.side == "BUY" else RED
         arrow = "▲ BUY" if sig.side == "BUY" else "▼ SELL"
         fields = [
@@ -62,7 +62,7 @@ class Notifier:
         }
         self._send(f"<@{self.user_id}> new **{sig.side}** signal on **{sig.symbol}**", embed)
 
-    def close(self, pos: Position, acc: AccountState):
+    def close(self, pos: Position, acc: Book):
         win = pos.pnl_usd >= 0
         embed = {
             "title": f"CLOSED {pos.strategy.upper()} - {pos.symbol} [{pos.exit_reason.upper()}]",

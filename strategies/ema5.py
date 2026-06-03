@@ -13,6 +13,8 @@ from core import indicators as ind
 NAME = "ema5"
 RR = 3.0
 LOOKBACK = 25
+ATR_FLOOR_MULT = 0.6     # minimum stop = 0.6 x ATR(14): keeps the alert-candle stop
+                         # clear of intrabar noise so a tick can't stop us in seconds
 
 
 def generate(scfg, instruments, fetch, now):
@@ -66,6 +68,8 @@ def _detect(sym, df, interval, side):
     if alert is None:
         return None
 
+    atr_floor = ATR_FLOOR_MULT * float(ind.atr(df, 14).iloc[-1])
+
     if side == "SELL":
         trigger_level = l[alert]
         if l[last] < trigger_level:          # latest bar breaks the alert low
@@ -74,9 +78,12 @@ def _detect(sym, df, interval, side):
             risk = stop - entry
             if risk <= 0:
                 return None
+            if risk < atr_floor:             # alert-candle stop too tight -> widen to noise floor
+                risk = atr_floor
+                stop = entry + risk
+            note = f"alert candle {df.index[alert]:%m-%d %H:%M} broken"
             return Signal(NAME, sym, "SELL", entry, stop, entry - RR * risk, interval,
-                          df.index[alert].isoformat(),
-                          note=f"alert candle {df.index[alert]:%m-%d %H:%M} broken")
+                          df.index[alert].isoformat(), note=note)
     else:
         trigger_level = h[alert]
         if h[last] > trigger_level:          # latest bar breaks the alert high
@@ -85,7 +92,10 @@ def _detect(sym, df, interval, side):
             risk = entry - stop
             if risk <= 0:
                 return None
+            if risk < atr_floor:             # alert-candle stop too tight -> widen to noise floor
+                risk = atr_floor
+                stop = entry - risk
+            note = f"alert candle {df.index[alert]:%m-%d %H:%M} broken"
             return Signal(NAME, sym, "BUY", entry, stop, entry + RR * risk, interval,
-                          df.index[alert].isoformat(),
-                          note=f"alert candle {df.index[alert]:%m-%d %H:%M} broken")
+                          df.index[alert].isoformat(), note=note)
     return None

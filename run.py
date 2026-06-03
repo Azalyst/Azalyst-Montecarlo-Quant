@@ -27,7 +27,7 @@ except Exception:
 from core import data
 from core.risk import FundingPipsRules
 from core.sessions import now_utc
-from core.state import (load_account, save_account, load_positions, save_positions,
+from core.state import (load_books, save_books, load_positions, save_positions,
                         load_sent, save_sent)
 from core.notify import Notifier
 from core import papertrade as pt
@@ -66,72 +66,86 @@ def main():
                        color=0x3498DB)
         return
 
-    acc = load_account()
-    acc.account_size = rules.account_size
+    strat_names = list(cfg["strategies"].keys())
+    books = load_books(strat_names, rules.account_size)
     positions = load_positions()
     sent = load_sent()
 
     def fetch(inst, interval, bars=300):
         return data.fetch_ohlc(inst, interval, bars)
 
-    # ---- 1. daily roll (FundingPips server day) ----
+    # ---- 1. daily roll (FundingPips server day), per book ----
     day = rules.server_day(now)
-    if acc.current_day != day:
-        acc.current_day = day
-        acc.today_start_equity = acc.equity
-        acc.daily_realized_pnl = 0.0
-        acc.sl_count = {}
+    for b in books.values():
+        if b.current_day != day:
+            b.current_day = day
+            b.today_start_equity = b.equity
+            b.daily_realized_pnl = 0.0
+            b.sl_count = {}
 
-    # ---- 2. resolve open positions ----
+    # ---- 2. resolve open positions, attributing PnL to the owning strategy's book ----
     open_positions = [p for p in positions if p.status == "open"]
     for pos in open_positions:
+        b = books.get(pos.strategy)
+        if b is None:
+            continue
         inst = instruments[pos.symbol]
         df = fetch(inst, pos.interval, bars=300)
         use_be = pos.strategy in strategies.BREAKEVEN_STRATEGIES
         pnl = pt.update_position(pos, df, inst["value_per_point"], use_breakeven=use_be)
         if pos.status == "closed":
-            acc.balance += pnl
-            acc.daily_realized_pnl += pnl
-            acc.trades_total += 1
+            b.balance += pnl
+            b.daily_realized_pnl += pnl
+            b.trades_total += 1
             if pnl >= 0:
-                acc.wins += 1
+                b.wins += 1
             else:
-                acc.losses += 1
+                b.losses += 1
             if pos.exit_reason in SL_REASONS:
-                acc.sl_count[pos.strategy] = acc.sl_count.get(pos.strategy, 0) + 1
-            notifier.close(pos, acc)
+                b.sl_count[pos.strategy] = b.sl_count.get(pos.strategy, 0) + 1
+            notifier.close(pos, b)
 
-    # ---- 3. mark equity + status ----
+    # ---- 3. mark equity + resolve pass/fail, per book ----
     open_positions = [p for p in positions if p.status == "open"]
-    unrealized = 0.0
+    unreal_by_strat = {}
     for pos in open_positions:
         inst = instruments[pos.symbol]
         df = fetch(inst, pos.interval, bars=50)
         if df is not None and len(df):
-            unrealized += pt.mark_to_market(pos, float(df["close"].iloc[-1]), inst["value_per_point"])
-    acc.equity = round(acc.balance + unrealized, 2)
-    acc.peak_balance = max(acc.peak_balance, acc.balance)
+            mtm = pt.mark_to_market(pos, float(df["close"].iloc[-1]), inst["value_per_point"])
+            unreal_by_strat[pos.strategy] = unreal_by_strat.get(pos.strategy, 0.0) + mtm
 
-    if acc.status == "active" and acc.equity <= rules.overall_floor:
-        acc.status = "failed"
-        notifier.alert("MAX LOSS BREACHED - challenge failed",
-                       f"Equity ${acc.equity:,.0f} hit the ${rules.overall_floor:,.0f} floor. "
-                       f"No new trades will be opened.", color=0xE74C3C)
+    for name, b in books.items():
+        b.equity = round(b.balance + unreal_by_strat.get(name, 0.0), 2)
+        b.peak_balance = max(b.peak_balance, b.balance)
+        if b.status != "active":
+            continue
+        daily_loss = max(0.0, b.today_start_equity - b.equity)
+        if b.equity <= rules.overall_floor:
+            b.status, b.failed_reason, b.resolved_at = "failed", "max loss", now.isoformat()
+            notifier.alert(f"{name.upper()} FAILED - max loss breached",
+                           f"[{name}] equity ${b.equity:,.0f} hit the ${rules.overall_floor:,.0f} "
+                           f"floor. This strategy's challenge is over - it will stop trading.",
+                           color=0xE74C3C)
+        elif daily_loss >= rules.max_daily_loss:
+            b.status, b.failed_reason, b.resolved_at = "failed", "daily loss", now.isoformat()
+            notifier.alert(f"{name.upper()} FAILED - daily loss limit",
+                           f"[{name}] down ${daily_loss:,.0f} today (limit "
+                           f"${rules.max_daily_loss:,.0f}). Daily drawdown breach = challenge failed.",
+                           color=0xE74C3C)
+        elif b.balance >= rules.pass_threshold:
+            b.status, b.resolved_at = "passed", now.isoformat()
+            notifier.alert(f"{name.upper()} PASSED - profit target hit",
+                           f"[{name}] balance ${b.balance:,.0f} reached the "
+                           f"${rules.pass_threshold:,.0f} target (+{rules.profit_target_pct:g}%). "
+                           f"Challenge passed.", color=0x00FFFF)
 
-    daily_loss = max(0.0, acc.today_start_equity - acc.equity)
-    if acc.status == "active" and daily_loss >= rules.max_daily_loss:
-        notifier.alert("DAILY LOSS LIMIT HIT",
-                       f"Down ${daily_loss:,.0f} today (limit ${rules.max_daily_loss:,.0f}). "
-                       f"New trades paused until the daily reset.", color=0xE67E22)
-
-    # ---- 4 + 5. generate, gate, size, open ----
-    open_by_symbol = {}
-    for p in open_positions:
-        open_by_symbol.setdefault(p.symbol, []).append(p)
-
+    # ---- 4 + 5. generate, gate, size, open (only for books still ACTIVE) ----
     new_signals = []
     for name, scfg in cfg["strategies"].items():
         if not scfg.get("enabled"):
+            continue
+        if books[name].status != "active":      # passed/failed books stop trading
             continue
         mod = strategies.REGISTRY.get(name)
         if not mod:
@@ -141,19 +155,25 @@ def main():
         except Exception as e:
             print(f"[strategy {name}] error: {e}")
 
+    # open positions scoped per strategy (each book is its own independent account)
+    open_by_strat_sym = {}
+    for p in open_positions:
+        open_by_strat_sym.setdefault((p.strategy, p.symbol), []).append(p)
+
     for sig in new_signals:
+        b = books.get(sig.strategy)
+        if b is None or b.status != "active":
+            continue
         sig.rr = sig.compute_rr()
         key = sig.dedupe_key
         if key in sent:
             continue
-        # no duplicate same strategy+symbol open; no conflicting opposite open
-        existing = open_by_symbol.get(sig.symbol, [])
-        if any(p.strategy == sig.strategy for p in existing):
+        # within this strategy's own book: no duplicate / no opposite-side hedge on a symbol
+        existing = open_by_strat_sym.get((sig.strategy, sig.symbol), [])
+        if existing:
             continue
-        if any(p.side != sig.side for p in existing):
-            continue
-        # 5 EMA 3-SL daily rule
-        if sig.strategy == "ema5" and acc.sl_count.get("ema5", 0) >= EMA5_DAILY_SL_CAP:
+        # 5 EMA 3-SL daily rule (per book)
+        if sig.strategy == "ema5" and b.sl_count.get("ema5", 0) >= EMA5_DAILY_SL_CAP:
             continue
 
         inst = instruments[sig.symbol]
@@ -166,28 +186,33 @@ def main():
             continue
         risk_usd = rules.risk_usd()
 
-        worst_open = sum(pt.worst_case_loss(p) for p in positions if p.status == "open")
-        ok, reason = rules.gate(acc, worst_open, risk_usd, now)
+        # worst-case open risk is scoped to THIS strategy's book only
+        worst_open = sum(pt.worst_case_loss(p) for p in positions
+                         if p.status == "open" and p.strategy == sig.strategy)
+        ok, reason = rules.gate(b, worst_open, risk_usd, now)
         if not ok:
             print(f"[gate] blocked {sig.strategy} {sig.symbol} {sig.side}: {reason}")
             continue
 
         pos = pt.open_position(sig, units, lots, risk_usd, now.isoformat())
         positions.append(pos)
-        open_by_symbol.setdefault(sig.symbol, []).append(pos)
+        open_by_strat_sym.setdefault((sig.strategy, sig.symbol), []).append(pos)
         sent.add(key)
-        notifier.signal(sig, pos, acc)
+        notifier.signal(sig, pos, b)
         print(f"[open] {sig.strategy} {sig.symbol} {sig.side} @ {sig.entry:g} "
               f"SL {sig.stop:g} TP {sig.target:g} ({lots:g} lots)")
 
     # ---- 6. persist + report ----
-    save_account(acc)
+    save_books(books)
     save_positions(positions)
     save_sent(sent)
-    write_report(acc, positions, now)
-    build_status(acc, positions, data.last_prices(), instruments, now)
-    print(f"[done] equity ${acc.equity:,.2f} | day PnL ${acc.daily_realized_pnl:,.2f} | "
-          f"open {len([p for p in positions if p.status=='open'])} | status {acc.status}")
+    write_report(books, positions, rules, now)
+    build_status(books, positions, rules, data.last_prices(), instruments, now)
+    active = sum(1 for b in books.values() if b.status == "active")
+    passed = sum(1 for b in books.values() if b.status == "passed")
+    failed = sum(1 for b in books.values() if b.status == "failed")
+    print(f"[done] books active {active} / passed {passed} / failed {failed} | "
+          f"open {len([p for p in positions if p.status=='open'])}")
 
 
 if __name__ == "__main__":

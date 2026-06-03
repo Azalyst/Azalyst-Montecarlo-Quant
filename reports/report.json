@@ -1,30 +1,90 @@
 {
-  "updated": "2026-06-02T23:47:30.036994+00:00",
-  "status": "active",
-  "balance": 96000.0,
-  "equity": 96000.0,
-  "net_pnl": -4000.0,
-  "today_pnl": 0.0,
-  "trades_total": 7,
-  "wins": 1,
-  "losses": 6,
-  "win_rate": 14.3,
-  "open_positions": 1,
-  "by_strategy": {
-    "quantx": {
-      "trades": 2,
-      "wins": 1,
-      "pnl": 1000.0
-    },
-    "smt_divergence": {
-      "trades": 3,
+  "updated": "2026-06-03T02:38:15.155991+00:00",
+  "model": "per-strategy isolated challenges",
+  "account_size_each": 100000.0,
+  "profit_target_pct": 8.0,
+  "passed": 0,
+  "failed": 0,
+  "active": 6,
+  "open_positions": 0,
+  "books": [
+    {
+      "strategy": "rsi",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
       "wins": 0,
-      "pnl": -3000.0
+      "losses": 0,
+      "win_rate": 0.0
     },
-    "ema5": {
-      "trades": 2,
+    {
+      "strategy": "ema5",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
       "wins": 0,
-      "pnl": -2000.0
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    {
+      "strategy": "eth_blueprint",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    {
+      "strategy": "smt_divergence",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    {
+      "strategy": "jadecap",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
+    },
+    {
+      "strategy": "quantx",
+      "status": "active",
+      "failed_reason": "",
+      "balance": 100000.0,
+      "equity": 100000.0,
+      "net_pnl": 0.0,
+      "net_pnl_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0.0
     }
-  }
+  ]
 }

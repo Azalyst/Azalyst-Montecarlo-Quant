@@ -1,5 +1,5 @@
 # Azalyst FundingPips - Per-Strategy Challenges
-_updated 2026-06-03 02:52 UTC_
+_updated 2026-06-03 04:18 UTC_
 
 Each strategy runs its own **$100,000** challenge (pass +8%, fail -10% overall or -5% daily). Passed 0 / Failed 0 / Active 6.
 
@@ -11,3 +11,8 @@ Each strategy runs its own **$100,000** challenge (pass +8%, fail -10% overall o
 | smt_divergence | ACTIVE | $100,000 | $0.00 (+0%) | 0 | 0.0% |
 | jadecap | ACTIVE | $100,000 | $0.00 (+0%) | 0 | 0.0% |
 | quantx | ACTIVE | $100,000 | $0.00 (+0%) | 0 | 0.0% |
+
+## Open positions
+| Strategy | Symbol | Side | Entry | Stop | Target | Lots | Risk |
+|---|---|---|---|---|---|---|---|
+| quantx | BTCUSD | SELL | 66241.6 | 66847.4 | 65030 | 1.65074 | $1,000 |

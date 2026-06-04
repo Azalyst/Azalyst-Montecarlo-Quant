@@ -1,5 +1,5 @@
 # Azalyst FundingPips - Per-Strategy Challenges
-_updated 2026-06-04 13:49 UTC_
+_updated 2026-06-04 16:55 UTC_
 
 Each strategy runs its own **$100,000** challenge (pass +8%, fail -10% overall or -5% daily). Passed 0 / Failed 0 / Active 6.
 

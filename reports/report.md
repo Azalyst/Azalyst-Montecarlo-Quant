@@ -1,5 +1,5 @@
 # Azalyst FundingPips - Per-Strategy Challenges
-_updated 2026-06-03 23:23 UTC_
+_updated 2026-06-04 02:06 UTC_
 
 Each strategy runs its own **$100,000** challenge (pass +8%, fail -10% overall or -5% daily). Passed 0 / Failed 0 / Active 6.
 
@@ -11,6 +11,13 @@ Each strategy runs its own **$100,000** challenge (pass +8%, fail -10% overall o
 | eth_blueprint | ACTIVE | $100,000 | $0.00 (+0%) | 0 | 0.0% |
 | smt_divergence | ACTIVE | $99,000 | $-1,000.00 (-1%) | 1 | 0.0% |
 | quantx | ACTIVE | $99,000 | $-1,000.00 (-1%) | 1 | 0.0% |
+
+## Open positions
+| Strategy | Symbol | Side | Entry | Stop | Target | Lots | Risk |
+|---|---|---|---|---|---|---|---|
+| rsi | SP500 | SELL | 7539.5 | 7893.21 | 7185.79 | 2.82721 | $1,000 |
+| eth_blueprint | ETHUSD | SELL | 1757.35 | 1846.98 | 1578.09 | 11.157 | $1,000 |
+| quantx | BTCUSD | SELL | 62083.4 | 62751.8 | 60746.8 | 1.49631 | $1,000 |
 
 ## Recent closed trades (last 15)
 | Closed | Strategy | Symbol | Side | Exit | PnL | R |

@@ -1,12 +1,12 @@
 {
-  "updated": "2026-06-03T23:23:49.684120+00:00",
+  "updated": "2026-06-04T02:06:22.071009+00:00",
   "model": "per-strategy isolated challenges",
   "account_size_each": 100000.0,
   "profit_target_pct": 8.0,
   "passed": 0,
   "failed": 0,
   "active": 6,
-  "open_positions": 0,
+  "open_positions": 3,
   "books": [
     {
       "strategy": "rsi",

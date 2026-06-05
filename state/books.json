@@ -36,7 +36,7 @@
   "eth_blueprint": {
     "strategy": "eth_blueprint",
     "account_size": 100000.0,
-    "equity": 100325.34,
+    "equity": 100963.4,
     "balance": 100000.0,
     "today_start_equity": 99832.98,
     "current_day": "2026-06-04",
@@ -53,21 +53,21 @@
   "smt_divergence": {
     "strategy": "smt_divergence",
     "account_size": 100000.0,
-    "equity": 100000.0,
-    "balance": 100000.0,
+    "equity": 99000.0,
+    "balance": 99000.0,
     "today_start_equity": 99000.0,
     "current_day": "2026-06-04",
-    "daily_realized_pnl": 1000.0,
+    "daily_realized_pnl": 0.0,
     "peak_balance": 101000.0,
     "status": "active",
     "failed_reason": "",
     "resolved_at": "",
     "sl_count": {
-      "smt_divergence": 1
+      "smt_divergence": 2
     },
-    "trades_total": 6,
+    "trades_total": 7,
     "wins": 2,
-    "losses": 4
+    "losses": 5
   },
   "jadecap": {
     "strategy": "jadecap",

@@ -93,7 +93,7 @@
     "symbol": "ETHUSD",
     "side": "SELL",
     "entry": 1757.3499755859375,
-    "stop": 1846.97998046875,
+    "stop": 1757.3499755859375,
     "target": 1578.0899658203125,
     "units": 11.156978082367154,
     "lots": 11.156978082367154,
@@ -101,7 +101,7 @@
     "opened_at": "2026-06-04T02:06:22.071009+00:00",
     "interval": "15m",
     "initial_stop": 1846.97998046875,
-    "be_moved": false,
+    "be_moved": true,
     "status": "open",
     "exit_price": null,
     "closed_at": null,
@@ -344,11 +344,11 @@
     "interval": "5m",
     "initial_stop": 62539.28008125,
     "be_moved": false,
-    "status": "open",
-    "exit_price": null,
-    "closed_at": null,
-    "pnl_usd": 0.0,
-    "r_multiple": 0.0,
-    "exit_reason": ""
+    "status": "closed",
+    "exit_price": 62539.28008125,
+    "closed_at": "2026-06-05T05:55:00+00:00",
+    "pnl_usd": -1000.0,
+    "r_multiple": -1.0,
+    "exit_reason": "sl"
   }
 ]

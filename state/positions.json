@@ -146,12 +146,12 @@
     "interval": "1d",
     "initial_stop": 4363.5,
     "be_moved": false,
-    "status": "open",
-    "exit_price": null,
-    "closed_at": null,
-    "pnl_usd": 0.0,
-    "r_multiple": 0.0,
-    "exit_reason": ""
+    "status": "closed",
+    "exit_price": 4363.5,
+    "closed_at": "2026-06-05T00:00:00+00:00",
+    "pnl_usd": -1000.0,
+    "r_multiple": -1.0,
+    "exit_reason": "sl"
   },
   {
     "id": "smt_divergence-BTCUSD-1780556288036",

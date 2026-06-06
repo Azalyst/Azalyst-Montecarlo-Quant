@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-06T20:10:16.975406+00:00",
+  "updated": "2026-06-06T21:18:53.577581+00:00",
   "model": "per-strategy isolated challenges",
   "account_size_each": 100000.0,
   "profit_target_pct": 8.0,
@@ -13,7 +13,7 @@
       "status": "failed",
       "failed_reason": "daily loss",
       "balance": 99000.0,
-      "equity": 95008.49,
+      "equity": 99954.09,
       "net_pnl": -1000.0,
       "net_pnl_pct": -1.0,
       "trades": 1,

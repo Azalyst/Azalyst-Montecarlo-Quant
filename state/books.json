@@ -19,7 +19,7 @@
   "ema5": {
     "strategy": "ema5",
     "account_size": 100000.0,
-    "equity": 103819.35,
+    "equity": 103432.26,
     "balance": 102000.0,
     "today_start_equity": 104067.74,
     "current_day": "2026-06-07",
@@ -87,7 +87,7 @@
   "quantx": {
     "strategy": "quantx",
     "account_size": 100000.0,
-    "equity": 98000.0,
+    "equity": 98484.39,
     "balance": 98000.0,
     "today_start_equity": 98000.0,
     "current_day": "2026-06-07",

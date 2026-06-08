@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-07T23:45:29.954395+00:00",
+  "updated": "2026-06-08T04:10:59.480360+00:00",
   "model": "per-strategy isolated challenges",
   "account_size_each": 100000.0,
   "profit_target_pct": 8.0,
@@ -25,14 +25,14 @@
       "strategy": "ema5",
       "status": "active",
       "failed_reason": "",
-      "balance": 102000.0,
-      "equity": 103432.26,
-      "net_pnl": 2000.0,
-      "net_pnl_pct": 2.0,
-      "trades": 2,
-      "wins": 1,
+      "balance": 105000.0,
+      "equity": 105000.0,
+      "net_pnl": 5000.0,
+      "net_pnl_pct": 5.0,
+      "trades": 3,
+      "wins": 2,
       "losses": 1,
-      "win_rate": 50.0
+      "win_rate": 66.7
     },
     {
       "strategy": "eth_blueprint",
@@ -78,7 +78,7 @@
       "status": "active",
       "failed_reason": "",
       "balance": 98000.0,
-      "equity": 98484.39,
+      "equity": 98199.54,
       "net_pnl": -2000.0,
       "net_pnl_pct": -2.0,
       "trades": 8,

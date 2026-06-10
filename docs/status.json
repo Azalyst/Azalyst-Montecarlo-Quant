@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-09 22:59 UTC",
-  "updated_iso": "2026-06-09T22:59:36.162887+00:00",
+  "updated": "2026-06-10 00:21 UTC",
+  "updated_iso": "2026-06-10T00:21:42.883690+00:00",
   "model": "per-strategy",
   "challenge": {
-    "day": 7,
+    "day": 8,
     "total": 30,
     "start": "2026-06-03",
     "end": "2026-07-02"
@@ -23,14 +23,14 @@
     "active": 3,
     "size_total": 600000.0,
     "balance_total": 612756.02,
-    "equity_total": 613472.98,
+    "equity_total": 613707.99,
     "net_pnl": 12756.02,
     "net_pnl_pct": 2.13,
     "trades": 32,
     "wins": 15,
     "losses": 17,
     "win_rate": 46.9,
-    "open": 2
+    "open": 3
   },
   "books": [
     {
@@ -148,7 +148,7 @@
       "wins": 1,
       "losses": 0,
       "win_rate": 100.0,
-      "open": 0,
+      "open": 1,
       "daily": {
         "used": 0.0,
         "limit": 5000.0,
@@ -205,7 +205,7 @@
       "resolved_at": "2026-06-06 03:39",
       "size": 100000.0,
       "balance": 98000.0,
-      "equity": 98716.96,
+      "equity": 98951.97,
       "net_pnl": -2000.0,
       "net_pnl_pct": -2.0,
       "today_pnl": 0.0,
@@ -221,9 +221,9 @@
         "remaining": 5000.0
       },
       "overall": {
-        "used": 1283.04,
+        "used": 1048.03,
         "limit": 10000.0,
-        "remaining": 8716.96
+        "remaining": 8951.97
       },
       "target": {
         "usd": 108000.0,
@@ -256,6 +256,18 @@
       "risk": 1000.0,
       "be": false,
       "opened": "2026-06-05 00:10"
+    },
+    {
+      "strategy": "eth_blueprint",
+      "symbol": "ETHUSD",
+      "side": "SELL",
+      "entry": 1641.239990234375,
+      "stop": 1661.949951171875,
+      "target": 1599.820068359375,
+      "lots": 48.2859,
+      "risk": 1000.0,
+      "be": false,
+      "opened": "2026-06-10 00:21"
     }
   ],
   "closed": [
@@ -583,15 +595,19 @@
   "tape": [
     {
       "sym": "NAS100",
-      "px": 29454.75
+      "px": 29138.0
     },
     {
       "sym": "SP500",
-      "px": 7416.0
+      "px": 7385.5
     },
     {
       "sym": "BTCUSD",
-      "px": 61812.0
+      "px": 61793.16
+    },
+    {
+      "sym": "ETHUSD",
+      "px": 1641.24
     }
   ],
   "equity_curve": [
@@ -858,6 +874,10 @@
     {
       "t": "2026-06-09T22:59",
       "e": 613472.98
+    },
+    {
+      "t": "2026-06-10T00:21",
+      "e": 613707.99
     }
   ]
 }

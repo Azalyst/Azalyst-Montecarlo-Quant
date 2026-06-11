@@ -35,6 +35,12 @@ class Book:
     trades_total: int = 0
     wins: int = 0
     losses: int = 0
+    phase: int = 1                     # 1 or 2 (FundingPips Phase 1 / Phase 2)
+    phase1_start: str = ""             # ISO date Phase 1 started
+    phase1_passed_at: str = ""         # ISO timestamp Phase 1 was passed
+    phase2_start: str = ""             # ISO date Phase 2 started
+    phase1_days: int = 0               # calendar days to pass Phase 1
+    phase2_days: int = 0               # calendar days elapsed in Phase 2
 
     def to_dict(self):
         return asdict(self)

@@ -1,7 +1,6 @@
 """Write the running PnL report (markdown + json) into reports/.
 
-Each strategy is its own isolated FundingPips challenge, so the report is a league
-table of independent books (PASSED / FAILED / ACTIVE) plus the trade ledger.
+Single OB strategy tracking Phase 1 → Phase 2 challenge progress.
 """
 from __future__ import annotations
 import os
@@ -25,6 +24,9 @@ def write_report(books, positions, rules, now: dt.datetime):
         book_rows.append({
             "strategy": name,
             "status": b.status,
+            "phase": b.phase,
+            "phase1_days": b.phase1_days,
+            "phase2_days": b.phase2_days,
             "failed_reason": b.failed_reason,
             "balance": round(b.balance, 2),
             "equity": round(b.equity, 2),
@@ -38,53 +40,52 @@ def write_report(books, positions, rules, now: dt.datetime):
 
     summary = {
         "updated": now.isoformat(),
-        "model": "per-strategy isolated challenges",
-        "account_size_each": rules.account_size,
-        "profit_target_pct": rules.profit_target_pct,
-        "passed": sum(1 for r in book_rows if r["status"] == "passed"),
-        "failed": sum(1 for r in book_rows if r["status"] == "failed"),
-        "active": sum(1 for r in book_rows if r["status"] == "active"),
+        "model": "ob-phase-challenge",
+        "account_size": rules.account_size,
+        "phase1_target_pct": rules.profit_target_pct,
+        "phase2_target_pct": rules.phase2_target_pct,
         "open_positions": len(open_),
         "books": book_rows,
     }
     with open(os.path.join(REPORTS, "report.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
+    book = book_rows[0] if book_rows else {}
+    phase1 = book.get("phase1_days", 0)
+    phase2 = book.get("phase2_days", 0)
+
     lines = [
-        "# Azalyst FundingPips - Per-Strategy Challenges",
+        "# Azalyst OB Challenge — FundingPips",
         f"_updated {now:%Y-%m-%d %H:%M UTC}_",
         "",
-        f"Each strategy runs its own **${rules.account_size:,.0f}** challenge "
-        f"(pass +{rules.profit_target_pct:g}%, fail -{rules.max_overall_loss/rules.account_size*100:g}% "
-        f"overall or -{rules.max_daily_loss/rules.account_size*100:g}% daily). "
-        f"Passed {summary['passed']} / Failed {summary['failed']} / Active {summary['active']}.",
+        f"**Order Block (OB) Strategy** — ${rules.account_size:,.0f} challenge. "
+        f"Phase 1: +{rules.profit_target_pct:g}% | Phase 2: +{rules.phase2_target_pct:g}%.",
         "",
-        "| Strategy | Status | Balance | Net PnL | Trades | Win% |",
-        "|---|---|---|---|---|---|",
     ]
-    order = {"passed": 0, "active": 1, "failed": 2}
-    for r in sorted(book_rows, key=lambda x: (order.get(x["status"], 3), -x["net_pnl"])):
-        badge = _BADGE.get(r["status"], r["status"].upper())
-        if r["status"] == "failed" and r["failed_reason"]:
-            badge += f" ({r['failed_reason']})"
-        lines.append(f"| {r['strategy']} | {badge} | ${r['balance']:,.0f} | "
-                     f"${r['net_pnl']:,.2f} ({r['net_pnl_pct']:+g}%) | {r['trades']} | {r['win_rate']}% |")
+
+    if phase1 > 0:
+        lines.append(f"- Phase 1: **{phase1} days** to pass")
+    if phase2 > 0:
+        lines.append(f"- Phase 2: **{phase2} days** elapsed" + (" (PASSED)" if book.get("status") == "passed" else ""))
+    lines.append(f"- Status: **{_BADGE.get(book.get('status','active'), 'ACTIVE')}**")
+    lines.append(f"- Balance: ${book.get('balance', 0):,.0f} | Net PnL: ${book.get('net_pnl', 0):,.2f} ({book.get('net_pnl_pct', 0):+g}%)")
+    lines.append(f"- Trades: {book.get('trades', 0)} | Win rate: {book.get('win_rate', 0)}%")
 
     if open_:
         lines += ["", "## Open positions",
-                  "| Strategy | Symbol | Side | Entry | Stop | Target | Lots | Risk |",
-                  "|---|---|---|---|---|---|---|---|"]
+                  "| Symbol | Side | Entry | Stop | Target | Lots | Risk |",
+                  "|---|---|---|---|---|---|---|"]
         for p in open_:
-            lines.append(f"| {p.strategy} | {p.symbol} | {p.side} | {p.entry:g} | "
+            lines.append(f"| {p.symbol} | {p.side} | {p.entry:g} | "
                          f"{p.stop:g} | {p.target:g} | {p.lots:g} | ${p.risk_usd:,.0f} |")
 
     if closed:
         lines += ["", "## Recent closed trades (last 15)",
-                  "| Closed | Strategy | Symbol | Side | Exit | PnL | R |",
-                  "|---|---|---|---|---|---|---|"]
+                  "| Closed | Symbol | Side | Exit | PnL | R |",
+                  "|---|---|---|---|---|---|"]
         for p in closed[-15:]:
             ca = (p.closed_at or "")[:16].replace("T", " ")
-            lines.append(f"| {ca} | {p.strategy} | {p.symbol} | {p.side} | "
+            lines.append(f"| {ca} | {p.symbol} | {p.side} | "
                          f"{p.exit_reason} | ${p.pnl_usd:,.2f} | {p.r_multiple:+g}R |")
 
     with open(os.path.join(REPORTS, "report.md"), "w", encoding="utf-8") as f:

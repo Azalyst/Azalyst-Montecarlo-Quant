@@ -19,16 +19,16 @@ class FundingPipsRules:
         self.max_daily_loss = float(a["max_daily_loss"])
         self.max_overall_loss = float(a["max_overall_loss"])
         self.profit_target_pct = float(a.get("profit_target_pct", 8.0))
+        self.phase2_target_pct = float(a.get("phase2_target_pct", 5.0))
         self.reset_hour = int(a["daily_reset_utc_hour"])
         self.start = dt.date.fromisoformat(a["challenge_start"])
-        self.end = dt.date.fromisoformat(a["challenge_end"])
         self.risk_pct = float(r["risk_per_trade_pct"])
         self.buffer = float(r["safety_buffer"])
         self.max_leverage = float(r.get("max_leverage", 30))
 
     # ---- challenge window ----
     def within_challenge(self, now: dt.datetime) -> bool:
-        return self.start <= now.date() <= self.end
+        return now.date() >= self.start
 
     # ---- FundingPips "server day" key (for the daily-loss reset) ----
     def server_day(self, now: dt.datetime) -> str:
@@ -66,9 +66,14 @@ class FundingPipsRules:
         return self.account_size - self.max_overall_loss   # $90,000
 
     @property
-    def pass_threshold(self) -> float:
-        # balance at/above this = challenge PASSED (e.g. +8% -> $108,000)
+    def pass_threshold_phase1(self) -> float:
+        # Phase 1: +8% -> $108,000
         return self.account_size * (1.0 + self.profit_target_pct / 100.0)
+
+    @property
+    def pass_threshold_phase2(self) -> float:
+        # Phase 2: +5% -> $105,000
+        return self.account_size * (1.0 + self.phase2_target_pct / 100.0)
 
     def daily_budget(self) -> float:
         return self.max_daily_loss * self.buffer

@@ -16,6 +16,7 @@ from __future__ import annotations
 import os
 import sys
 import argparse
+import datetime as dt
 import yaml
 
 try:                       # keep emoji/arrows printable on Windows consoles (cp1252)
@@ -37,7 +38,6 @@ from dashboard import build_status
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SL_REASONS = {"sl"}
-EMA5_DAILY_SL_CAP = 3
 
 
 def load_config():
@@ -82,6 +82,8 @@ def main():
             b.today_start_equity = b.equity
             b.daily_realized_pnl = 0.0
             b.sl_count = {}
+            if b.phase == 2:
+                b.phase2_days = max(1, (now.date() - dt.date.fromisoformat(b.phase2_start)).days + 1)
 
     # ---- 2. resolve open positions, attributing PnL to the owning strategy's book ----
     open_positions = [p for p in positions if p.status == "open"]
@@ -133,12 +135,45 @@ def main():
                            f"[{name}] down ${daily_loss:,.0f} today (limit "
                            f"${rules.max_daily_loss:,.0f}). Daily drawdown breach = challenge failed.",
                            color=0xE74C3C)
-        elif b.balance >= rules.pass_threshold:
+        elif b.phase == 1 and b.balance >= rules.pass_threshold_phase1:
+            # Phase 1 passed -> transition to Phase 2
+            b.phase1_passed_at = now.isoformat()
+            b.phase1_days = max(1, (now.date() - rules.start).days + 1)
+            b.phase2_start = now.date().isoformat()
+            b.phase = 2
+            # Reset account for Phase 2
+            b.account_size = rules.account_size
+            b.balance = rules.account_size
+            b.equity = rules.account_size
+            b.peak_balance = rules.account_size
+            b.today_start_equity = rules.account_size
+            b.phase2_days = 0
+            b.trades_total = 0
+            b.wins = 0
+            b.losses = 0
+            notifier.alert(f"{name.upper()} PHASE 1 PASSED - {b.phase1_days} days",
+                           f"[{name}] Phase 1 complete in {b.phase1_days} days. "
+                           f"Balance hit ${rules.pass_threshold_phase1:,.0f} (+{rules.profit_target_pct:g}%). "
+                           f"Starting Phase 2 — ${rules.account_size:,.0f} account, +{rules.phase2_target_pct:g}% target.",
+                           color=0x00FFFF)
+            # Close all open positions for this book
+            for p in positions:
+                if p.strategy == name and p.status == "open":
+                    p.status = "closed"
+                    p.exit_price = p.entry
+                    p.closed_at = now.isoformat()
+                    p.pnl_usd = 0.0
+                    p.r_multiple = 0.0
+                    p.exit_reason = "phase"
+        elif b.phase == 2 and b.balance >= rules.pass_threshold_phase2:
+            # Phase 2 passed -> challenge complete!
+            b.phase2_days = max(1, (now.date() - dt.date.fromisoformat(b.phase2_start)).days + 1)
             b.status, b.resolved_at = "passed", now.isoformat()
-            notifier.alert(f"{name.upper()} PASSED - profit target hit",
-                           f"[{name}] balance ${b.balance:,.0f} reached the "
-                           f"${rules.pass_threshold:,.0f} target (+{rules.profit_target_pct:g}%). "
-                           f"Challenge passed.", color=0x00FFFF)
+            notifier.alert(f"{name.upper()} PHASE 2 PASSED - Challenge complete!",
+                           f"[{name}] Phase 1: {b.phase1_days} days | "
+                           f"Phase 2: {b.phase2_days} days. "
+                           f"Total challenge passed. Balance ${b.balance:,.0f}.",
+                           color=0x00FFFF)
 
     # ---- 4 + 5. generate, gate, size, open (only for books still ACTIVE) ----
     new_signals = []
@@ -171,9 +206,6 @@ def main():
         # within this strategy's own book: no duplicate / no opposite-side hedge on a symbol
         existing = open_by_strat_sym.get((sig.strategy, sig.symbol), [])
         if existing:
-            continue
-        # 5 EMA 3-SL daily rule (per book)
-        if sig.strategy == "ema5" and b.sl_count.get("ema5", 0) >= EMA5_DAILY_SL_CAP:
             continue
 
         inst = instruments[sig.symbol]

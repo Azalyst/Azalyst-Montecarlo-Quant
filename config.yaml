@@ -1,73 +1,37 @@
-# Azalyst FundingPips Signal Engine - configuration
-# All money values in USD. All times handled internally in UTC.
+# Azalyst FundingPips - Order Block (OB) Challenge Signal Engine
+# Single strategy, single challenge tracking Phase 1 → Phase 2
 
-# Each strategy runs its OWN independent challenge with these limits (isolated book).
 account:
-  size: 100000.0            # FundingPips account size - PER STRATEGY
-  max_daily_loss: 5000.0    # 5% - resets each trading day. Breach -> strategy FAILED.
-  max_overall_loss: 10000.0 # 10% - balance floor $90,000. Breach -> strategy FAILED.
-  profit_target_pct: 8.0    # +8% balance ($108,000) -> strategy PASSED.
-  daily_reset_utc_hour: 22  # FundingPips server day rollover (~00:00 GMT+2). Adjust if needed.
-  challenge_start: "2026-06-03"   # Day 1 (fresh per-strategy reset)
-  challenge_end: "2026-07-02"     # 30-day window
+  size: 100000.0
+  max_daily_loss: 5000.0       # 5%
+  max_overall_loss: 10000.0    # 10%
+  profit_target_pct: 8.0       # Phase 1: +8% to pass
+  phase2_target_pct: 5.0       # Phase 2: +5% to pass
+  daily_reset_utc_hour: 22
+  challenge_start: "2026-06-11"   # Day 1
 
 risk:
-  risk_per_trade_pct: 1.0   # % of account size risked per trade (stop-loss = this loss)
-  # Hard gate: a new trade is blocked if (realized loss today + worst-case open risk +
-  # this trade's risk) would breach the daily or overall loss limit. Guarantees the
-  # FundingPips rules cannot be broken even if every open stop is hit.
-  safety_buffer: 0.90       # only use 90% of each limit as the usable budget
-  max_leverage: 30          # skip a trade whose notional > max_leverage x account (sanity cap)
+  risk_per_trade_pct: 1.0
+  safety_buffer: 0.90
+  max_leverage: 30
 
-# Instrument registry. pnl is always in USD (we only trade USD-PnL instruments so
-# sizing is exact). value_per_point = USD P&L per 1.0 price move per 1.0 unit.
-# lot_units = how many "units" make 1 broker lot (for display/mirroring on FundingPips).
-# min_stop = minimum stop distance in PRICE. Signals with a tighter stop are skipped
-# (noise filter + prevents micro-stops from producing absurd position sizes).
 instruments:
   EURUSD:  {source: yfinance, ticker: "EURUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0010}
   GBPUSD:  {source: yfinance, ticker: "GBPUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0010}
-  AUDUSD:  {source: yfinance, ticker: "AUDUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0008}
-  NZDUSD:  {source: yfinance, ticker: "NZDUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0008}
   XAUUSD:  {source: yfinance, ticker: "GC=F",     asset: metal,  value_per_point: 1.0, lot_units: 100,    pip: 0.1,    digits: 2, min_stop: 2.5}
-  XAGUSD:  {source: yfinance, ticker: "SI=F",     asset: metal,  value_per_point: 1.0, lot_units: 5000,   pip: 0.01,   digits: 3, min_stop: 0.10}
   NAS100:  {source: yfinance, ticker: "NQ=F",     asset: index,  value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 25.0}
   SP500:   {source: yfinance, ticker: "ES=F",     asset: index,  value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 8.0}
   BTCUSD:  {source: bybit,    ticker: "BTCUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 60.0}
   ETHUSD:  {source: bybit,    ticker: "ETHUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 0.1,    digits: 2, min_stop: 4.0}
-  XRPUSD:  {source: bybit,    ticker: "XRPUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 0.0001, digits: 4, min_stop: 0.004}
 
-# Which strategy runs on which instruments and timeframe. Session gates per the docs.
 strategies:
-  rsi:
+  ob:
     enabled: true
     instruments: [EURUSD, GBPUSD, XAUUSD, NAS100, SP500, BTCUSD, ETHUSD]
-    interval: "1d"
-  ema5:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, XAUUSD, NAS100]
-    interval_sell: "5m"
-    interval_buy: "15m"
-  eth_blueprint:
-    enabled: true
-    instruments: [ETHUSD]
-    interval: "15m"
-    bias_interval: "4h"
-    session: asia        # first 2-3h of Asia session only
-  smt_divergence:
-    enabled: true
-    pair: [BTCUSD, ETHUSD]
-    interval: "5m"
-  jadecap:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, NAS100, SP500]
-    interval: "15m"
-    session: ny          # 9:30-11:30 EST only
-  quantx:
-    enabled: true
-    instruments: [BTCUSD]
-    interval: "15m"
+    interval: "15m"           # entry timeframe
+    htf_interval: "4h"        # order block detection timeframe
+    rr_ratio: 2.0             # 1:2 risk-reward
+    ob_lookback: 20           # bars to scan for order blocks
 
 discord:
-  user_id: "1363959528194052118"   # pinged on every signal
-  # webhook URL comes from the DISCORD_WEBHOOK_URL env var / GitHub secret. Never commit it.
+  user_id: "1363959528194052118"

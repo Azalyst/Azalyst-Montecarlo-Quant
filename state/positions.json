@@ -482,5 +482,27 @@
     "pnl_usd": 0.0,
     "r_multiple": 0.0,
     "exit_reason": ""
+  },
+  {
+    "id": "ema5-NAS100-1781296300480",
+    "strategy": "ema5",
+    "symbol": "NAS100",
+    "side": "SELL",
+    "entry": 29712.0,
+    "stop": 29737.078719597215,
+    "target": 29636.763841208354,
+    "units": 39.874443993186986,
+    "lots": 39.874443993186986,
+    "risk_usd": 1000.0,
+    "opened_at": "2026-06-12T20:29:17.480244+00:00",
+    "interval": "5m",
+    "initial_stop": 29737.078719597215,
+    "be_moved": false,
+    "status": "open",
+    "exit_price": null,
+    "closed_at": null,
+    "pnl_usd": 0.0,
+    "r_multiple": 0.0,
+    "exit_reason": ""
   }
 ]

@@ -71,21 +71,21 @@
   "smt_divergence": {
     "strategy": "smt_divergence",
     "account_size": 100000.0,
-    "equity": 102373.88,
-    "balance": 103000.0,
+    "equity": 101469.03,
+    "balance": 102000.0,
     "today_start_equity": 101786.07,
     "current_day": "2026-06-12",
-    "daily_realized_pnl": 1000.0,
+    "daily_realized_pnl": 0.0,
     "peak_balance": 106000.0,
     "status": "active",
     "failed_reason": "",
     "resolved_at": "",
     "sl_count": {
-      "smt_divergence": 1
+      "smt_divergence": 2
     },
-    "trades_total": 9,
+    "trades_total": 10,
     "wins": 4,
-    "losses": 5,
+    "losses": 6,
     "phase": 1,
     "phase1_start": "",
     "phase1_passed_at": "",
@@ -142,7 +142,7 @@
   "ob": {
     "strategy": "ob",
     "account_size": 100000.0,
-    "equity": 94090.75,
+    "equity": 94200.95,
     "balance": 94000.0,
     "today_start_equity": 94040.33,
     "current_day": "2026-06-12",

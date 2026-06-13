@@ -25,7 +25,7 @@
   "ema5": {
     "strategy": "ema5",
     "account_size": 100000.0,
-    "equity": 100365.7,
+    "equity": 100993.72,
     "balance": 99000.0,
     "today_start_equity": 99000.0,
     "current_day": "2026-06-12",
@@ -71,7 +71,7 @@
   "smt_divergence": {
     "strategy": "smt_divergence",
     "account_size": 100000.0,
-    "equity": 100511.38,
+    "equity": 100574.61,
     "balance": 101000.0,
     "today_start_equity": 101786.07,
     "current_day": "2026-06-12",
@@ -142,7 +142,7 @@
   "ob": {
     "strategy": "ob",
     "account_size": 100000.0,
-    "equity": 93911.17,
+    "equity": 93930.38,
     "balance": 94000.0,
     "today_start_equity": 94040.33,
     "current_day": "2026-06-12",

@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-13 07:52 UTC",
-  "updated_iso": "2026-06-13T07:52:47.662385+00:00",
+  "updated": "2026-06-13 10:31 UTC",
+  "updated_iso": "2026-06-13T10:31:15.585317+00:00",
   "model": "multi-phase",
   "challenge": {
     "day": 3,
@@ -23,7 +23,7 @@
     "phase2": 0,
     "size_total": 700000.0,
     "balance_total": 697000.0,
-    "equity_total": 697732.18,
+    "equity_total": 698442.64,
     "net_pnl": -3000.0,
     "net_pnl_pct": -0.43,
     "trades": 19,
@@ -89,7 +89,7 @@
       "resolved_at": "",
       "size": 100000.0,
       "balance": 101000.0,
-      "equity": 100511.38,
+      "equity": 100574.61,
       "net_pnl": 1000.0,
       "net_pnl_pct": 1.0,
       "today_pnl": -1000.0,
@@ -100,9 +100,9 @@
       "win_rate": 37.5,
       "open": 1,
       "daily": {
-        "used": 1274.69,
+        "used": 1211.46,
         "limit": 5000.0,
-        "remaining": 3725.31
+        "remaining": 3788.54
       },
       "overall": {
         "used": 0.0,
@@ -212,7 +212,7 @@
       "resolved_at": "",
       "size": 100000.0,
       "balance": 99000.0,
-      "equity": 100365.7,
+      "equity": 100993.72,
       "net_pnl": -1000.0,
       "net_pnl_pct": -1.0,
       "today_pnl": 0.0,
@@ -294,7 +294,7 @@
       "resolved_at": "",
       "size": 100000.0,
       "balance": 94000.0,
-      "equity": 93911.17,
+      "equity": 93930.38,
       "net_pnl": -6000.0,
       "net_pnl_pct": -6.0,
       "today_pnl": 0.0,
@@ -305,14 +305,14 @@
       "win_rate": 0.0,
       "open": 2,
       "daily": {
-        "used": 129.16,
+        "used": 109.95,
         "limit": 5000.0,
-        "remaining": 4870.84
+        "remaining": 4890.05
       },
       "overall": {
-        "used": 6088.83,
+        "used": 6069.62,
         "limit": 10000.0,
-        "remaining": 3911.17
+        "remaining": 3930.38
       },
       "target": {
         "usd": 108000.0,
@@ -610,23 +610,23 @@
     },
     {
       "sym": "XAUUSD",
-      "px": 4239.9
+      "px": 4238.8
     },
     {
       "sym": "NAS100",
-      "px": 29677.75
+      "px": 29662.0
     },
     {
       "sym": "SP500",
-      "px": 7436.25
+      "px": 7435.0
     },
     {
       "sym": "BTCUSD",
-      "px": 63494.14
+      "px": 63806.37
     },
     {
       "sym": "ETHUSD",
-      "px": 1664.17
+      "px": 1675.14
     }
   ],
   "equity_curve": [
@@ -697,6 +697,10 @@
     {
       "t": "2026-06-13T07:52",
       "e": 697732.18
+    },
+    {
+      "t": "2026-06-13T10:31",
+      "e": 698442.64
     }
   ]
 }

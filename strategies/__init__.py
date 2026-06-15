@@ -5,7 +5,7 @@ Each strategy module exposes:
     generate(scfg, instruments, fetch, now) -> list[Signal]
 where `fetch(inst_cfg, interval, bars) -> DataFrame` and `now` is tz-aware UTC.
 """
-from . import rsi, ema5, eth_blueprint, smt_divergence, jadecap, quantx, ob
+from . import rsi, ema5, eth_blueprint, smt_divergence, jadecap, quantx, rebel_funding
 
 REGISTRY = {
     rsi.NAME: rsi,
@@ -14,7 +14,7 @@ REGISTRY = {
     smt_divergence.NAME: smt_divergence,
     jadecap.NAME: jadecap,
     quantx.NAME: quantx,
-    ob.NAME: ob,
+    rebel_funding.NAME: rebel_funding,
 }
 
 # strategies whose open positions are managed with a break-even move at 1R

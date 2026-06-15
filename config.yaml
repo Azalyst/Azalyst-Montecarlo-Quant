@@ -57,13 +57,11 @@ strategies:
     enabled: true
     instruments: [BTCUSD]
     interval: "15m"
-  ob:
+
+  rebel_funding:
     enabled: true
     instruments: [EURUSD, GBPUSD, XAUUSD, NAS100, SP500, BTCUSD, ETHUSD]
-    interval: "15m"
-    htf_interval: "4h"
-    rr_ratio: 2.0
-    ob_lookback: 20
+    interval: "1h"
 
 discord:
   user_id: "1363959528194052118"

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-17T19:36:50.133269+00:00",
+  "updated": "2026-06-17T21:36:41.818101+00:00",
   "model": "multi-phase-challenge",
   "account_size": 100000.0,
   "phase1_target_pct": 8.0,
@@ -9,7 +9,7 @@
   "active": 6,
   "in_phase1": 7,
   "in_phase2": 0,
-  "open_positions": 3,
+  "open_positions": 4,
   "books": [
     {
       "strategy": "rsi",

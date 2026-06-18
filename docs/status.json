@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-18 19:57 UTC",
-  "updated_iso": "2026-06-18T19:57:22.263815+00:00",
+  "updated": "2026-06-18 22:21 UTC",
+  "updated_iso": "2026-06-18T22:21:12.424239+00:00",
   "model": "multi-phase",
   "challenge": {
     "day": 8,
@@ -174,7 +174,7 @@
       "equity": 100000.0,
       "net_pnl": 0.0,
       "net_pnl_pct": 0.0,
-      "today_pnl": 2000.0,
+      "today_pnl": 0.0,
       "peak_balance": 103000.0,
       "trades": 9,
       "wins": 3,
@@ -256,7 +256,7 @@
       "equity": 99000.0,
       "net_pnl": -1000.0,
       "net_pnl_pct": -1.0,
-      "today_pnl": -1000.0,
+      "today_pnl": 0.0,
       "peak_balance": 106000.0,
       "trades": 28,
       "wins": 9,
@@ -264,9 +264,9 @@
       "win_rate": 32.1,
       "open": 0,
       "daily": {
-        "used": 1000.0,
+        "used": 0.0,
         "limit": 5000.0,
-        "remaining": 4000.0
+        "remaining": 5000.0
       },
       "overall": {
         "used": 1000.0,
@@ -784,11 +784,11 @@
     },
     {
       "sym": "BTCUSD",
-      "px": 62886.21
+      "px": 62847.04
     },
     {
       "sym": "ETHUSD",
-      "px": 1705.65
+      "px": 1701.49
     }
   ],
   "equity_curve": [
@@ -1042,6 +1042,10 @@
     },
     {
       "t": "2026-06-18T19:57",
+      "e": 698773.79
+    },
+    {
+      "t": "2026-06-18T22:21",
       "e": 698773.79
     }
   ]

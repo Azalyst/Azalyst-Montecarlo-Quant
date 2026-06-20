@@ -7,7 +7,7 @@
       "initial_balance": 100000.0,
       "mode": "aggressive",
       "attempt_num": 1,
-      "attempt_start_iso": null,
+      "attempt_start_iso": "2026-06-19 03:00:00+00:00",
       "attempts": [],
       "phase": "phase1",
       "phase_num": 1,
@@ -63,7 +63,7 @@
           "ts": "2026-06-20T13:13:23.600548+00:00"
         }
       ],
-      "updated_iso": "2026-06-20T13:13:23.600548+00:00",
+      "updated_iso": "2026-06-20T14:55:16.674077+00:00",
       "book": "MED"
     },
     "AGGRESSIVE": {
@@ -73,7 +73,7 @@
       "initial_balance": 100000.0,
       "mode": "aggressive",
       "attempt_num": 1,
-      "attempt_start_iso": null,
+      "attempt_start_iso": "2026-06-19 03:00:00+00:00",
       "attempts": [],
       "phase": "phase1",
       "phase_num": 1,
@@ -129,7 +129,7 @@
           "ts": "2026-06-20T13:13:23.601594+00:00"
         }
       ],
-      "updated_iso": "2026-06-20T13:13:23.601594+00:00",
+      "updated_iso": "2026-06-20T14:55:16.675266+00:00",
       "book": "AGGRESSIVE"
     },
     "MAX": {
@@ -139,7 +139,7 @@
       "initial_balance": 100000.0,
       "mode": "aggressive",
       "attempt_num": 1,
-      "attempt_start_iso": null,
+      "attempt_start_iso": "2026-06-19 03:00:00+00:00",
       "attempts": [],
       "phase": "phase1",
       "phase_num": 1,
@@ -195,9 +195,9 @@
           "ts": "2026-06-20T13:13:23.602605+00:00"
         }
       ],
-      "updated_iso": "2026-06-20T13:13:23.602605+00:00",
+      "updated_iso": "2026-06-20T14:55:16.676425+00:00",
       "book": "MAX"
     }
   },
-  "updated_iso": "2026-06-20T13:13:23.602645+00:00"
+  "updated_iso": "2026-06-20T14:55:16.676488+00:00"
 }

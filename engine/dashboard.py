@@ -46,7 +46,7 @@ def build_status(state: dict, cfg: dict) -> dict:
         }
 
     return {
-        "brand": state.get("brand", "Azalyst Montecarlo"),
+        "brand": state.get("brand", "Azalyst Montecarlo Quant"),
         "tagline": state.get("tagline", ""),
         "updated_iso": state.get("updated_iso"),
         "updated": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M UTC"),

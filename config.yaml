@@ -7,8 +7,8 @@
 # backtest + 2-step Monte-Carlo. See research/MASTER_REPORT.md.
 
 brand:
-  name: "Azalyst Montecarlo"
-  tagline: "Monte-Carlo-validated gold 2-step engine"
+  name: "Azalyst Montecarlo Quant"
+  tagline: "Monte-Carlo-validated gold 2-step quant engine"
 
 account:
   size: 100000.0

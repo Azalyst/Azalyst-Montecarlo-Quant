@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azalyst Montecarlo — Gold 2-Step Engine</title>
+<title>Azalyst Montecarlo Quant — Gold 2-Step</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:13px}
@@ -107,7 +107,7 @@ canvas{width:100%;height:240px;display:block;background:#050505}
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="logo">AZALYST<span>MONTECARLO</span></div>
+  <div class="logo">AZALYST<span>MONTECARLO QUANT</span></div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('DASH',this)">DASHBOARD</button>
     <button class="tab" onclick="switchTab('TRADES',this)">TRADES</button>
@@ -224,13 +224,13 @@ canvas{width:100%;height:240px;display:block;background:#050505}
     <p><b>One strategy the data earned.</b> Reverse-engineered from <span class="hl">301,472 real prop-firm trades</span>: every trader-month was replayed through the exact FundingPips 2-step rules. The finding — traders fail on the <span class="hl">5% daily line</span>, not the target; <span class="hl">12.5%</span> of the biggest winners would have busted. The separator between passers and busters is <span class="hl">worst-trade size</span>, not style. So the whole edge is risk control.</p>
     <p><b>Instrument:</b> Gold (XAU/USD H1) — the only instrument whose edge survived both halves of a training window <span class="hl">and</span> a held-out out-of-sample test (PF 1.46, +27.5%, 7.5% max DD). A single rule across 9 instruments loses; FX & indices over-fit.</p>
     <p><b>Entry:</b> momentum breakout (within 0.05·ATR of the prior 20-bar high in an uptrend). <b>Exit:</b> 2·ATR stop → break-even at +1R → 3·ATR trail → 48-bar time stop. <b>Sizing:</b> 0.75% (P1) / 0.50% (P2), calibrated by a 2-step Monte-Carlo: <span class="hl">~88% full-pass, ~0% daily-bust</span>.</p>
-    <p style="color:#666">Method &amp; figures: <a href="https://github.com/Azalyst/Azalyst-FundingPips-Signals/blob/main/research/MASTER_REPORT.md">MASTER_REPORT</a> · <a href="https://github.com/Azalyst/Azalyst-FundingPips-Signals/blob/main/research/PLAYBOOK.md">PLAYBOOK</a>. Paper-traded live on GitHub Actions vs the exact FundingPips rules. The ~88% reflects a favourable gold regime — research deliverable, not financial advice.</p>
+    <p style="color:#666">Method &amp; figures: <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/MASTER_REPORT.md">MASTER_REPORT</a> · <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/PLAYBOOK.md">PLAYBOOK</a>. Paper-traded live on GitHub Actions vs the exact FundingPips rules. The ~88% reflects a favourable gold regime — research deliverable, not financial advice.</p>
   </div></div>
 </div>
 
 <!-- STATUS BAR -->
 <div class="statusbar">
-  <span id="s-left">AZALYST MONTECARLO · gold 2-step engine · paper-trading $100k vs live FundingPips rules</span>
+  <span id="s-left">AZALYST MONTECARLO QUANT · gold 2-step · paper-trading $100k vs live FundingPips rules</span>
   <span style="display:flex;gap:10px;align-items:center">
     <span id="s-updated">—</span>
     <button class="refresh-btn" onclick="load()" title="Force refresh">⟳ REFRESH</button>

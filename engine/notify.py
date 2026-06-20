@@ -21,7 +21,7 @@ class Notifier:
             return
         payload = {"content": content, "embeds": [embed],
                    "allowed_mentions": {"users": [self.user_id] if self.user_id else []},
-                   "username": "Azalyst Montecarlo"}
+                   "username": "Azalyst Montecarlo Quant"}
         try:
             r = requests.post(self.url, json=payload, timeout=15)
             if r.status_code >= 300:
@@ -55,7 +55,7 @@ class Notifier:
             self._send(self._ping() + ev.title, embed)
 
     def test(self):
-        self._send(self._ping() + "Azalyst Montecarlo connectivity test",
+        self._send(self._ping() + "Azalyst Montecarlo Quant connectivity test",
                    {"title": "✅ Online", "description": "Webhook reachable.", "color": GREEN})
 
 

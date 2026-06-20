@@ -16,59 +16,80 @@ a{color:#ff9900;text-decoration:none}
 .tabs{display:flex;gap:1px;margin-left:8px}
 .tab{background:#cc5200;color:#000;padding:3px 16px;cursor:pointer;font-size:11px;font-weight:700;border:none;font-family:'Courier New',monospace}
 .tab:hover{background:#e06000}.tab.active{background:#fff;color:#000}
-.topbar-right{margin-left:auto;display:flex;gap:16px;font-size:11px;align-items:center;white-space:nowrap}
+.topbar-right{margin-left:auto;display:flex;gap:14px;font-size:11px;align-items:center;white-space:nowrap}
 .live-dot{color:#000;font-size:16px;animation:blink 1s step-end infinite}
 @keyframes blink{50%{opacity:0}}
 
 .tape{background:#111;padding:3px 0;overflow:hidden;white-space:nowrap;border-bottom:1px solid #222;font-size:11px}
-.tape-inner{display:inline-block;animation:scroll 36s linear infinite}
+.tape-inner{display:inline-block;animation:scroll 38s linear infinite}
 .tape-item{margin-right:34px}.tape-item b{color:#ff9900}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-.explain{background:linear-gradient(90deg,#160b00,#0a0a0a);border-bottom:1px solid #333;padding:8px 14px;font-size:11px;color:#cfa06a;line-height:1.5}
+.regime-bar{background:linear-gradient(90deg,#160b00,#0a0a0a);border-bottom:1px solid #333;display:flex;align-items:stretch;flex-wrap:wrap}
+.rcell{padding:6px 14px;border-right:1px solid #1a1a1a;display:flex;flex-direction:column;gap:2px;min-width:96px}
+.rk{font-size:8px;color:#555;text-transform:uppercase;letter-spacing:.5px}
+.rv{font-size:15px;font-weight:700;color:#fff}
+.rtag{margin-left:auto;padding:6px 14px;font-size:9px;color:#ff9900;display:flex;align-items:center}
+
+.explain{background:#0d0d0d;border-bottom:1px solid #222;padding:6px 14px;font-size:10px;color:#cfa06a;line-height:1.5}
 .explain b{color:#ff9900}.explain .x{color:#ff6b5b}
 
 .page{display:none}.page.active{display:block}
-.fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#333;padding:2px}
-.card{background:#0a0a0a;padding:12px 14px;border-top:3px solid #333}
-.card.lead{border-top-color:#00dd55}
-.card.failed{border-top-color:#aa0000}
-.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.main{display:grid;gap:2px;background:#333;padding:2px}
+.grid-3{grid-template-columns:1fr 1fr 1fr}.grid-2{grid-template-columns:1fr 1fr}
+.span2{grid-column:span 2}
+.panel{background:#0a0a0a;padding:9px 11px}
+.ph{color:#ff6600;font-weight:700;font-size:11px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.ph .cmd{color:#ffaa00;font-size:9px}
+
+.lead-banner{background:#06150c;border-bottom:1px solid #0a6a38;padding:7px 14px;font-size:12px;color:#00dd55}
+.lead-banner b{color:#fff}
+
+.card{background:#0a0a0a;padding:11px 13px;border-top:3px solid #333}
+.card.lead{border-top-color:#00dd55}.card.failed{border-top-color:#aa0000}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
 .cname{font-size:16px;font-weight:700;color:#ff9900;letter-spacing:.5px}
-.crisk{font-size:9px;color:#000;background:#ff6600;padding:2px 7px;font-weight:700}
-.card.MED .crisk{background:#00aa55}.card.AGGRESSIVE .crisk{background:#ff9900}.card.MAX .crisk{background:#ff3300}
+.crisk{font-size:9px;color:#000;padding:2px 7px;font-weight:700}
+.card.MED .crisk{background:#00cc66}.card.AGGRESSIVE .crisk{background:#ff9900}.card.MAX .crisk{background:#ff3300}
+.card.MED .cname{color:#00dd66}.card.MAX .cname{color:#ff6655}
 .pb{font-size:9px;font-weight:700;padding:2px 8px;letter-spacing:.5px}
 .pb-phase1{background:#2a1a00;color:#ff9900;border:1px solid #5a3b00}
 .pb-phase2{background:#001a2a;color:#00aaff;border:1px solid #0a4a7a}
 .pb-funded{background:#002a14;color:#00dd55;border:1px solid #0a6a38}
 .pb-failed{background:#2a0000;color:#ff3333;border:1px solid #6a1414}
 .cbal{display:flex;justify-content:space-between;align-items:baseline;margin:4px 0}
-.cbal .big{font-size:26px;font-weight:700;color:#fff}
-.cbal .pnl{font-size:12px;font-weight:700}
-.prog{height:12px;background:#111;border:1px solid #222;overflow:hidden;margin:6px 0 3px}
+.cbal .big{font-size:26px;font-weight:700;color:#fff}.cbal .pnl{font-size:12px;font-weight:700}
+.prog{height:11px;background:#111;border:1px solid #222;overflow:hidden;margin:6px 0 3px}
 .prog>div{height:100%;background:linear-gradient(90deg,#cc5200,#ff9900)}
-.cprogtxt{font-size:9px;color:#888;margin-bottom:8px}
-spark{display:block}
-canvas.spark{width:100%;height:54px;display:block;background:#050505;margin:6px 0}
+.cprogtxt{font-size:9px;color:#888;margin-bottom:7px}
+canvas.spark{width:100%;height:50px;display:block;background:#050505;margin:5px 0}
+canvas#race{width:100%;height:250px;display:block;background:#050505}
 .krow{display:flex;justify-content:space-between;padding:2px 0;font-size:10px;border-bottom:1px solid #0d0d0d}
 .krow .k{color:#777}.krow .v{color:#fff;font-weight:700}
-.alog{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px}
+.alog{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}
 .achip{font-size:8px;font-weight:700;padding:1px 5px;border:1px solid}
 .achip.pass{background:#06150c;color:#00dd55;border-color:#0a6a38}
 .achip.bust{background:#160404;color:#ff5533;border-color:#661500}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.stat-box{background:#050505;border:1px solid #1a1a1a;padding:6px 8px}
+.stat-label{color:#555;font-size:8px;text-transform:uppercase;letter-spacing:.4px}
+.stat-val{font-size:16px;font-weight:700;margin:2px 0;color:#fff}
+.evt{padding:3px 0;border-bottom:1px solid #0d0d0d;font-size:10px;display:flex;gap:6px;align-items:baseline}
+.ebook{font-size:8px;font-weight:700;padding:0 5px;min-width:78px}
+.eb-MED{color:#00dd66}.eb-AGGRESSIVE{color:#ff9900}.eb-MAX{color:#ff6655}
+.ecat{font-size:8px;font-weight:700;min-width:46px}
+.e-opened{color:#00cc44}.e-closed{color:#00ccff}.e-phase_pass{color:#ffcc00}.e-bust{color:#ff3333}
+.lgnd{display:flex;gap:12px;font-size:9px;margin-top:5px}
+.lgnd span{display:flex;align-items:center;gap:4px;color:#888}.lgnd i{width:14px;height:3px;display:inline-block}
+
 .up{color:#00dd33}.dn{color:#cc2200}.mut{color:#555}.neu{color:#cc7700}
-
-.lead-banner{background:#06150c;border-bottom:1px solid #0a6a38;padding:7px 14px;font-size:12px;color:#00dd55}
-.lead-banner b{color:#fff}
-
 .statusbar{background:#0a0a0a;border-top:1px solid #222;display:flex;justify-content:space-between;align-items:center;padding:4px 10px;font-size:9px;color:#444;gap:8px}
+.statusbar a{color:#ff9900}
 .refresh-btn{background:#1a1a0a;color:#ff9900;border:1px solid #ff6600;padding:2px 10px;font-family:'Courier New',monospace;font-size:9px;font-weight:700;cursor:pointer}
 .refresh-btn:hover{background:#ff6600;color:#000}
 .live-badge{color:#00ff41;font-size:10px}.stale-badge{color:#ff3333;font-size:10px}
-.method{padding:2px;background:#333}.method .panel{background:#0a0a0a;padding:12px 16px}
-.method p{font-size:11px;color:#bbb;line-height:1.6;margin:7px 0}
+.method .panel p{font-size:11px;color:#bbb;line-height:1.6;margin:7px 0}
 .method b{color:#ff9900}.method .hl{color:#fff}.method .x{color:#ff6b5b}
-.ph{color:#ff6600;font-weight:700;font-size:11px;border-bottom:1px solid #333;padding-bottom:4px;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -78,30 +99,52 @@ canvas.spark{width:100%;height:54px;display:block;background:#050505;margin:6px 
     <button class="tab active" onclick="sw('FLEET',this)">FLEET</button>
     <button class="tab" onclick="sw('METHOD',this)">METHOD</button>
   </div>
-  <div class="topbar-right">
-    <span class="live-dot">●</span>
-    <span id="clock">--:--:-- UTC</span>
-    <span id="dataStatus" class="stale-badge">● OFFLINE</span>
-  </div>
+  <div class="topbar-right"><span class="live-dot">●</span><span id="clock">--:--:-- UTC</span>
+    <span id="dataStatus" class="stale-badge">● OFFLINE</span></div>
 </div>
 <div class="tape"><div class="tape-inner" id="tape">loading…</div></div>
+
+<div class="regime-bar" id="regime"></div>
 <div class="explain">
-  <b>⚡ FAST-PASS FLEET</b> — three aggression levels racing the same gold strategy to pass the FundingPips 2-step (Phase 1 +8% → Phase 2 +5%). Higher risk = faster but more busts; each book auto-resets and keeps trying. <span class="x">Watch which passes first.</span> Honest: ~40% per attempt in a trending gold market, lower if it ranges — a trend-rider, not a sure thing.
+  <b>⚡ FAST-PASS FLEET</b> — three risk throttles racing the same gold scale-in strategy to pass the FundingPips 2-step (+8% → +5%). Higher risk = faster but more busts; each book auto-resets and keeps trying. <span class="x">Watch which gets funded first.</span> Honest: ~40%/attempt in a trending gold market, lower if it ranges — a trend-rider.
 </div>
 
 <div class="page active" id="FLEET">
   <div class="lead-banner" id="leadBanner" style="display:none"></div>
-  <div class="fleet" id="fleet"></div>
+  <div class="main grid-3" id="fleet"></div>
+
+  <div class="main grid-3">
+    <div class="panel span2">
+      <div class="ph"><span>THE RACE — equity, current attempt</span><span class="cmd">% OF $100K</span></div>
+      <canvas id="race"></canvas>
+      <div class="lgnd" id="raceLegend"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span>GOLD MARKET</span><span class="cmd" id="g-bar">XAU/USD H1</span></div>
+      <div id="goldPanel"></div>
+    </div>
+  </div>
+
+  <div class="main grid-3">
+    <div class="panel">
+      <div class="ph"><span>FLEET LEDGER</span><span class="cmd">ALL BOOKS</span></div>
+      <div id="ledger"></div>
+    </div>
+    <div class="panel span2">
+      <div class="ph"><span>ACTIVITY</span><span class="cmd">ALL BOOKS · LIVE</span></div>
+      <div id="activity"><div class="mut" style="font-size:10px">no events yet</div></div>
+    </div>
+  </div>
 </div>
 
 <div class="page method" id="METHOD">
-  <div class="panel">
-    <div class="ph">HOW THIS WORKS</div>
-    <p><b>One edge, three throttles.</b> All books trade the same gold (XAU/USD H1) momentum-breakout edge — reverse-engineered from <span class="hl">301,472 real prop-firm trades</span> — with <b>scale-in</b> (add a tranche on a +1R winner, on house money, the monster mechanic). They differ only in per-trade risk: <span class="hl">MED 1.0% · AGGRESSIVE 1.5% · MAX 2.25%</span>.</p>
-    <p><b>Speed vs survival.</b> The real >100%/month traders hit +8% in ~2 days by sizing huge; the 10% max-drawdown never caught them (it's measured from <i>initial</i> balance), only the 5% daily $5k line does. Cranking risk here buys speed but costs pass-rate: MED is slowest/safest, MAX is fastest but busts most. Each book <b>auto-resets on a bust</b> and logs the attempt — the multi-attempt reality.</p>
-    <p><b>The honest numbers.</b> Out-of-sample, scale-in passes ~52–78% depending on risk; after a regime haircut, realistically <span class="hl">~40% per attempt in a trending year, ≤30% if gold ranges</span>. Budget 2–3 attempts (fee ~$529, refunded on first payout). When it works, both phases take <span class="hl">~2–5 weeks</span> of calendar time — faster books resolve in days, so you'll see real outcomes within ~2 weeks.</p>
+  <div class="main grid-3"><div class="panel span3" style="grid-column:span 3">
+    <div class="ph"><span>HOW THIS WORKS</span><span class="cmd">MONTE-CARLO</span></div>
+    <p><b>One edge, three throttles.</b> Every book trades the same gold (XAU/USD H1) momentum-breakout edge — reverse-engineered from <span class="hl">301,472 real prop-firm trades</span> — with <b>scale-in</b> (add a tranche on a +1R winner, on house money, the monster mechanic). They differ only in per-trade risk: <span class="hl">MED 1.0% · AGGRESSIVE 1.5% · MAX 2.25%</span>.</p>
+    <p><b>Speed vs survival.</b> The real >100%/month traders hit +8% in ~2 days by sizing huge; the 10% max-drawdown never caught them (it's from <i>initial</i> balance) — only the 5% daily $5k line does. Cranking risk buys speed but costs pass-rate: MED slowest/safest, MAX fastest but busts most. Each book <b>auto-resets on a bust</b> and logs the attempt — the multi-attempt reality.</p>
+    <p><b>The honest numbers.</b> Out-of-sample, scale-in passes ~52–78% by risk; after a regime haircut, realistically <span class="hl">~40% per attempt in a trending year, ≤30% if gold ranges</span> — a <span class="x">trend-rider</span>. Budget 2–3 attempts (fee ~$529, refunded on first payout). Both phases take <span class="hl">~2–5 weeks</span> when it works; the faster books resolve in days, so you'll see real outcomes within ~2 weeks.</p>
     <p style="color:#666">Method: <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/FAST_PASS.md">FAST_PASS</a> · <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/MASTER_REPORT.md">MASTER_REPORT</a> · <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/PLAYBOOK.md">PLAYBOOK</a>. Paper-traded live on GitHub Actions vs the exact FundingPips rules — not financial advice.</p>
-  </div>
+  </div></div>
 </div>
 
 <div class="statusbar">
@@ -112,6 +155,7 @@ canvas.spark{width:100%;height:54px;display:block;background:#050505;margin:6px 
 
 <script>
 const $=id=>document.getElementById(id);
+const COL={MED:'#00dd66',AGGRESSIVE:'#ff9900',MAX:'#ff5533'};
 const money=v=>'$'+Number(v).toLocaleString(undefined,{maximumFractionDigits:0});
 const sgn=v=>(v>=0?'+':'')+Number(v).toFixed(1);
 function sw(id,b){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));$(id).classList.add('active');if(b)b.classList.add('active');}
@@ -124,52 +168,101 @@ async function load(){
   const ageMin=s.updated_iso?(Date.now()-new Date(s.updated_iso))/60000:1e9;
   const ds=$('dataStatus'); if(ageMin<90){ds.className='live-badge';ds.textContent='● LIVE';}else{ds.className='stale-badge';ds.textContent='● STALE';}
   $('s-updated').textContent='updated '+(s.updated||'');
-  const books=s.books||[];
+  const books=s.books||[], m=s.market||{}, fs=s.fleet_stats||{};
 
-  // tape
-  $('tape').innerHTML=([['GOLD',s.gold_price||'—'],...books.map(b=>[b.name,money(b.balance)+' ('+sgn(b.pnl_pct)+'%)'])]
-    .map(([k,v])=>`<span class="tape-item"><b>${k}</b> ${v}</span>`).join('')).repeat(2);
+  $('tape').innerHTML=([['GOLD',(m.price||s.gold_price||'—')+' ('+sgn(m.change_24h_pct||0)+'%)'],['ATR',m.atr||'—'],['TREND',m.trend||'—'],
+    ...books.map(b=>[b.name,money(b.balance)+' '+sgn(b.pnl_pct)+'%'])].map(([k,v])=>`<span class="tape-item"><b>${k}</b> ${v}</span>`).join('')).repeat(2);
 
-  // leaderboard: most passes, then closest to target
+  // regime banner
+  const trUp=m.trend==='UP';
+  $('regime').innerHTML=[
+    ['Gold',(m.price?money(m.price):'—')],
+    ['24h',`<span class="${(m.change_24h_pct||0)>=0?'up':'dn'}">${sgn(m.change_24h_pct||0)}%</span>`],
+    ['Trend',`<span class="${trUp?'up':'dn'}">${m.trend||'—'}</span>`],
+    ['RSI',m.rsi||'—'],['ATR',m.atr||'—'],
+    ['Books',fs.books||0],['Attempts',fs.total_attempts||0],
+    ['Passed',`<span class="up">${fs.total_passed||0}</span> / <span class="dn">${fs.total_busted||0}</span>`],
+    ['Combined pass',`${fs.total_attempts?fs.combined_pass_rate+'%':'—'}`],
+  ].map(([k,v])=>`<div class="rcell"><span class="rk">${k}</span><span class="rv">${v}</span></div>`).join('')
+   +`<span class="rtag">FundingPips 2-step · +8% → +5% · 5% daily / 10% max</span>`;
+
+  // leaderboard
   const ranked=[...books].sort((a,b)=>(b.attempts.passed-a.attempts.passed)||(b.progress_pct-a.progress_pct));
-  if(ranked.length){const L=ranked[0];
-    $('leadBanner').style.display='';
-    const tp=L.attempts.passed>0?`${L.name} leads — ${L.attempts.passed} pass(es)`:`${L.name} closest — ${L.progress_pct}% to target`;
-    $('leadBanner').innerHTML=`🏁 <b>${tp}</b> · totals: `+books.map(b=>`${b.name} ${b.attempts.passed}✓/${b.attempts.busted}✗`).join(' · ');
-  }
+  if(ranked.length){const L=ranked[0];$('leadBanner').style.display='';
+    const tp=L.attempts.passed>0?`${L.name} leads — ${L.attempts.passed} funded pass(es)`:`${L.name} closest — ${L.progress_pct}% to +${L.target_pct}%`;
+    $('leadBanner').innerHTML=`🏁 <b>${tp}</b> · `+books.map(b=>`<span style="color:${COL[b.name]}">${b.name}</span> ${b.attempts.passed}✓/${b.attempts.busted}✗`).join(' · ');}
 
   $('fleet').innerHTML=books.map(b=>card(b,ranked[0]&&b.name===ranked[0].name)).join('');
-  books.forEach(b=>spark(b));
+  books.forEach(spark);
+  race(books);
+  $('raceLegend').innerHTML=books.map(b=>`<span><i style="background:${COL[b.name]}"></i>${b.name} ${b.risk_pct}%</span>`).join('')
+    +`<span><i style="background:#5a3b00"></i>+8% target</span>`;
+
+  // gold panel
+  const setup = m.dist_hi_atr!=null ? (m.dist_hi_atr<=0.3?'near 20-bar HIGH (long setup)':m.dist_lo_atr<=0.3?'near 20-bar LOW (short setup)':'mid-range (no setup)') : '—';
+  $('goldPanel').innerHTML=
+    `<div class="stat-grid"><div class="stat-box"><div class="stat-label">Price</div><div class="stat-val">${m.price?money(m.price):'—'}</div></div>`+
+    `<div class="stat-box"><div class="stat-label">24h</div><div class="stat-val ${(m.change_24h_pct||0)>=0?'up':'dn'}">${sgn(m.change_24h_pct||0)}%</div></div>`+
+    `<div class="stat-box"><div class="stat-label">Trend (EMA20/50)</div><div class="stat-val ${trUp?'up':'dn'}">${m.trend||'—'}</div></div>`+
+    `<div class="stat-box"><div class="stat-label">ATR / RSI</div><div class="stat-val">${m.atr||'—'} · ${m.rsi||'—'}</div></div></div>`+
+    `<div class="krow" style="margin-top:7px"><span class="k">Setup</span><span class="v">${setup}</span></div>`+
+    `<div class="krow"><span class="k">Dist to 20-bar hi / lo</span><span class="v">${m.dist_hi_atr??'—'} / ${m.dist_lo_atr??'—'} ATR</span></div>`+
+    `<div class="krow"><span class="k">Last bar</span><span class="v" style="font-size:9px">${(m.bar_time||'').slice(0,16)}</span></div>`;
+
+  // ledger
+  $('ledger').innerHTML=
+    `<div class="stat-grid"><div class="stat-box"><div class="stat-label">Total attempts</div><div class="stat-val">${fs.total_attempts||0}</div></div>`+
+    `<div class="stat-box"><div class="stat-label">Funded passes</div><div class="stat-val up">${fs.total_passed||0}</div></div>`+
+    `<div class="stat-box"><div class="stat-label">Busts</div><div class="stat-val dn">${fs.total_busted||0}</div></div>`+
+    `<div class="stat-box"><div class="stat-label">Combined pass</div><div class="stat-val">${fs.total_attempts?fs.combined_pass_rate+'%':'—'}</div></div></div>`+
+    books.map(b=>`<div class="krow"><span class="k" style="color:${COL[b.name]}">${b.name} ${b.risk_pct}%</span><span class="v">${b.attempts.passed}✓ / ${b.attempts.busted}✗ · att #${b.attempts.current_attempt}${b.attempts.median_pass_days!=null?' · ~'+b.attempts.median_pass_days+'d':''}</span></div>`).join('');
+
+  // activity (combined)
+  const ev=s.events||[];
+  $('activity').innerHTML=ev.length?ev.map(e=>
+    `<div class="evt"><span class="ebook eb-${e.book}">${e.book}</span><span class="ecat e-${e.kind}">${(e.kind||'').toUpperCase()}</span><span class="mut" style="color:#bbb">${e.title} <span style="color:#666">${e.detail||''}</span></span></div>`
+  ).join(''):'<div class="mut" style="font-size:10px">no events yet — books just opened their first attempts</div>';
 }
 
 function card(b,isLead){
-  const a=b.attempts||{}, p=b.position;
-  const cls=b.phase==='failed'?'failed':(isLead?'lead':'');
+  const a=b.attempts||{},p=b.position,cls=b.phase==='failed'?'failed':(isLead?'lead':'');
   return `<div class="card ${b.name} ${cls}">
     <div class="card-top"><span class="cname">${b.name}</span><span class="crisk">${b.risk_pct}% RISK</span></div>
     <div style="margin-bottom:6px"><span class="pb pb-${b.phase}">${b.phase_label}</span>
       ${p?`<span class="mut" style="font-size:9px;margin-left:6px">${p.side} ${p.lots} lots</span>`:'<span class="mut" style="font-size:9px;margin-left:6px">flat</span>'}</div>
     <div class="cbal"><span class="big">${money(b.balance)}</span><span class="pnl ${b.pnl_pct>=0?'up':'dn'}">${sgn(b.pnl_pct)}%</span></div>
     <div class="prog"><div style="width:${Math.max(2,b.progress_pct)}%"></div></div>
-    <div class="cprogtxt">${b.phase==='funded'?'FUNDED — passed both phases':b.progress_pct+'% to +'+b.target_pct+'%'} · attempt #${a.current_attempt} · ${b.days_running!=null?b.days_running+'d running':''}</div>
+    <div class="cprogtxt">${b.phase==='funded'?'FUNDED — passed both phases':b.progress_pct+'% to +'+b.target_pct+'%'} · attempt #${a.current_attempt}${b.days_running!=null?' · '+b.days_running+'d':''}</div>
     <canvas class="spark" id="sp-${b.name}"></canvas>
     <div class="krow"><span class="k">Attempts</span><span class="v">${a.attempts} (${a.passed}✓ / ${a.busted}✗)</span></div>
-    <div class="krow"><span class="k">Pass rate / median</span><span class="v">${a.attempts?a.pass_rate+'%':'—'} ${a.median_pass_days!=null?'· '+a.median_pass_days+'d':''}</span></div>
+    <div class="krow"><span class="k">Pass rate · median</span><span class="v">${a.attempts?a.pass_rate+'%':'—'}${a.median_pass_days!=null?' · '+a.median_pass_days+'d':''}</span></div>
     <div class="krow"><span class="k">Trades · win</span><span class="v">${b.stats.n_trades||0} · ${b.stats.win_rate||0}%</span></div>
     <div class="alog">${(b.attempt_log||[]).length?b.attempt_log.map(x=>{const pa=x.result==='PASSED';return `<span class="achip ${pa?'pass':'bust'}">#${x.n} ${pa?'PASS'+(x.days!=null?' '+x.days+'d':''):'BUST'}</span>`;}).join(''):'<span class="mut" style="font-size:9px">attempt #1 in progress…</span>'}</div>
   </div>`;
 }
 
 function spark(b){
-  const cv=$('sp-'+b.name); if(!cv)return; const dpr=window.devicePixelRatio||1;
-  const W=cv.clientWidth||300,H=54; cv.width=W*dpr;cv.height=H*dpr; const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-  const c=b.curve||[]; if(c.length<2){ctx.fillStyle='#444';ctx.font='9px Courier New';ctx.fillText('warming up…',8,30);return;}
-  const ys=c.map(p=>p[1]); const lo=Math.min(-1,Math.min(...ys)),hi=Math.max(b.target_pct||8,Math.max(...ys));
+  const cv=$('sp-'+b.name);if(!cv)return;const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth||300,H=50;cv.width=W*dpr;cv.height=H*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const c=b.curve||[];if(c.length<2){ctx.fillStyle='#444';ctx.font='9px Courier New';ctx.fillText('warming up…',8,28);return;}
+  const ys=c.map(p=>p[1]),lo=Math.min(-1,Math.min(...ys)),hi=Math.max(b.target_pct||8,Math.max(...ys));
   const x=i=>4+i/(c.length-1)*(W-8),y=v=>H-4-(v-lo)/(hi-lo)*(H-8);
-  // target + zero lines
-  [[0,'#2a3340'],[b.target_pct||8,'#5a3b00']].forEach(([lv,col])=>{if(lv<lo||lv>hi)return;ctx.strokeStyle=col;ctx.beginPath();ctx.moveTo(4,y(lv));ctx.lineTo(W-4,y(lv));ctx.stroke();});
+  ctx.strokeStyle='#2a3340';ctx.beginPath();ctx.moveTo(4,y(0));ctx.lineTo(W-4,y(0));ctx.stroke();
   ctx.beginPath();ctx.moveTo(x(0),y(ys[0]));c.forEach((p,i)=>ctx.lineTo(x(i),y(p[1])));
-  ctx.strokeStyle=ys[ys.length-1]>=0?'#00dd55':'#ff5533';ctx.lineWidth=1.4;ctx.stroke();
+  ctx.strokeStyle=COL[b.name]||'#ff9900';ctx.lineWidth=1.4;ctx.stroke();
+}
+
+function race(books){
+  const cv=$('race');if(!cv)return;const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth||700,H=250;cv.width=W*dpr;cv.height=H*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const series=books.map(b=>({name:b.name,c:b.curve||[],t:b.target_pct||8})).filter(s=>s.c.length>1);
+  if(!series.length){ctx.fillStyle='#555';ctx.font='12px Courier New';ctx.fillText('warming up — equity curves build over the first ticks…',14,30);return;}
+  const allY=series.flatMap(s=>s.c.map(p=>p[1]));
+  const lo=Math.min(-2,Math.min(...allY)),hi=Math.max(9,Math.max(...allY));
+  const maxLen=Math.max(...series.map(s=>s.c.length));
+  const padR=40,x=i=>6+i/(maxLen-1)*(W-6-padR),y=v=>H-6-(v-lo)/(hi-lo)*(H-16);
+  [[0,'#2a3340','#666'],[8,'#5a3b00','#ff9900'],[-10,'#5a1a1a','#cc2200']].forEach(([lv,ln,tx])=>{if(lv<lo||lv>hi)return;ctx.strokeStyle=ln;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(6,y(lv));ctx.lineTo(W-padR,y(lv));ctx.stroke();ctx.fillStyle=tx;ctx.font='10px Courier New';ctx.fillText((lv>0?'+':'')+lv+'%',W-padR+4,y(lv)+3);});
+  series.forEach(s=>{ctx.beginPath();s.c.forEach((p,i)=>i?ctx.lineTo(x(i),y(p[1])):ctx.moveTo(x(i),y(p[1])));ctx.strokeStyle=COL[s.name]||'#ff9900';ctx.lineWidth=1.6;ctx.stroke();});
 }
 load();setInterval(load,60000);window.addEventListener('resize',load);
 </script>

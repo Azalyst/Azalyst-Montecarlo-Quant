@@ -4,8 +4,56 @@
   "mode": "fleet",
   "instrument": "XAUUSD",
   "gold_price": 4167.5,
-  "updated_iso": "2026-06-20T13:05:29.221902+00:00",
-  "updated": "2026-06-20 13:05 UTC",
+  "market": {
+    "price": 4167.5,
+    "atr": 20.33,
+    "trend": "DOWN",
+    "rsi": 21.0,
+    "dist_hi_atr": 8.01,
+    "dist_lo_atr": -1.08,
+    "change_24h_pct": -3.78,
+    "bar_time": "2026-06-19 03:00:00+00:00"
+  },
+  "rules": {
+    "p1": 8.0,
+    "p2": 5.0,
+    "daily": 5.0,
+    "max": 10.0
+  },
+  "fleet_stats": {
+    "books": 3,
+    "total_attempts": 0,
+    "total_passed": 0,
+    "total_busted": 0,
+    "combined_pass_rate": 0,
+    "best_book": "MED",
+    "best_passes": 0
+  },
+  "events": [
+    {
+      "kind": "opened",
+      "title": "SELL XAUUSD @ 4194.00",
+      "detail": "stop 4234.66 | risk $2,250 (2.25%) | 0.553 lots",
+      "ts": "2026-06-20T13:12:32.669910+00:00",
+      "book": "MAX"
+    },
+    {
+      "kind": "opened",
+      "title": "SELL XAUUSD @ 4194.00",
+      "detail": "stop 4234.66 | risk $1,500 (1.50%) | 0.369 lots",
+      "ts": "2026-06-20T13:12:32.669030+00:00",
+      "book": "AGGRESSIVE"
+    },
+    {
+      "kind": "opened",
+      "title": "SELL XAUUSD @ 4194.00",
+      "detail": "stop 4234.66 | risk $1,000 (1.00%) | 0.246 lots",
+      "ts": "2026-06-20T13:12:32.667980+00:00",
+      "book": "MED"
+    }
+  ],
+  "updated_iso": "2026-06-20T13:12:32.669960+00:00",
+  "updated": "2026-06-20 13:12 UTC",
   "books": [
     {
       "name": "MED",
@@ -46,7 +94,7 @@
           "kind": "opened",
           "title": "SELL XAUUSD @ 4194.00",
           "detail": "stop 4234.66 | risk $1,000 (1.00%) | 0.246 lots",
-          "ts": "2026-06-20T13:05:29.219438+00:00"
+          "ts": "2026-06-20T13:12:32.667980+00:00"
         }
       ],
       "curve": [
@@ -95,7 +143,7 @@
           "kind": "opened",
           "title": "SELL XAUUSD @ 4194.00",
           "detail": "stop 4234.66 | risk $1,500 (1.50%) | 0.369 lots",
-          "ts": "2026-06-20T13:05:29.220689+00:00"
+          "ts": "2026-06-20T13:12:32.669030+00:00"
         }
       ],
       "curve": [
@@ -144,7 +192,7 @@
           "kind": "opened",
           "title": "SELL XAUUSD @ 4194.00",
           "detail": "stop 4234.66 | risk $2,250 (2.25%) | 0.553 lots",
-          "ts": "2026-06-20T13:05:29.221860+00:00"
+          "ts": "2026-06-20T13:12:32.669910+00:00"
         }
       ],
       "curve": [

@@ -99,20 +99,40 @@ def _book_view(name: str, bstate: dict, bcfg: dict) -> dict:
     }
 
 
-def build_fleet_status(state: dict, cfg: dict, gold_price=None) -> dict:
-    books = []
+def build_fleet_status(state: dict, cfg: dict, gold_price=None, market=None) -> dict:
+    books, combined = [], []
     for book in cfg["fleet"]:
         name = book["name"]
         bstate = state.get("books", {}).get(name)
         if not bstate:
             continue
         books.append(_book_view(name, bstate, book_cfg(cfg, book)))
+        for e in (bstate.get("events") or [])[:5]:
+            combined.append({**e, "book": name})
+    combined.sort(key=lambda e: e.get("ts", ""), reverse=True)
+
+    tot_att = sum(b["attempts"]["attempts"] for b in books)
+    tot_pass = sum(b["attempts"]["passed"] for b in books)
+    tot_bust = sum(b["attempts"]["busted"] for b in books)
+    best = max(books, key=lambda b: (b["attempts"]["passed"], b["progress_pct"])) if books else None
+    a = cfg["account"]
     return {
         "brand": cfg["brand"]["name"],
         "tagline": cfg["brand"]["tagline"],
         "mode": "fleet",
         "instrument": cfg["instrument"]["symbol"],
-        "gold_price": round(gold_price, 2) if gold_price else None,
+        "gold_price": round(gold_price, 2) if gold_price else (market or {}).get("price"),
+        "market": market or {},
+        "rules": {"p1": a["profit_target_p1_pct"], "p2": a["profit_target_p2_pct"],
+                  "daily": a["max_daily_loss_pct"], "max": a["max_overall_loss_pct"]},
+        "fleet_stats": {
+            "books": len(books), "total_attempts": tot_att, "total_passed": tot_pass,
+            "total_busted": tot_bust,
+            "combined_pass_rate": round(tot_pass / tot_att * 100, 0) if tot_att else 0,
+            "best_book": best["name"] if best else None,
+            "best_passes": best["attempts"]["passed"] if best else 0,
+        },
+        "events": combined[:14],
         "updated_iso": state.get("updated_iso"),
         "updated": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M UTC"),
         "books": books,

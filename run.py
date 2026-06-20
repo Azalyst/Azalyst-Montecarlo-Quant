@@ -100,7 +100,19 @@ def main():
     if is_fleet:
         state, all_events = FL.tick_fleet(state, signals, cfg)
         save_state(state)
-        DB.write_json(FL.build_fleet_status(state, cfg, gold_price=px))
+        last = signals.iloc[-1]
+        c24 = signals["close"].iloc[-25] if len(signals) > 25 else signals["close"].iloc[0]
+        market = {
+            "price": round(float(last["close"]), 2),
+            "atr": round(float(last["atr"]), 2),
+            "trend": "UP" if bool(last["trend_up"]) else "DOWN",
+            "rsi": round(float(last["rsi"]), 0),
+            "dist_hi_atr": round(float(last["dist_hi_atr"]), 2),
+            "dist_lo_atr": round(float(last["dist_lo_atr"]), 2),
+            "change_24h_pct": round((float(last["close"]) / float(c24) - 1) * 100, 2),
+            "bar_time": str(signals.index[-1]),
+        }
+        DB.write_json(FL.build_fleet_status(state, cfg, gold_price=px, market=market))
         n_ev = 0
         for name, evs in all_events.items():
             for ev in evs:

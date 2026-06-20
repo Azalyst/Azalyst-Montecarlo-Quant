@@ -1,8 +1,8 @@
 {
   "brand": "Azalyst Montecarlo Quant",
   "tagline": "Monte-Carlo-validated gold 2-step quant engine",
-  "updated_iso": null,
-  "updated": "2026-06-20 12:36 UTC",
+  "updated_iso": "2026-06-20T12:37:05.245621+00:00",
+  "updated": "2026-06-20 12:37 UTC",
   "instrument": "XAUUSD",
   "mode": "aggressive",
   "attempts": {
@@ -21,28 +21,36 @@
     "target_pct": 8.0,
     "target_balance": 108000.0,
     "progress_pct": 0.0,
-    "trading_days": 0,
+    "trading_days": 1,
     "min_trading_days": 3,
     "start": "2026-06-20"
   },
   "account": {
     "size": 100000.0,
     "balance": 100000.0,
-    "equity": 100000.0,
+    "equity": 100814.63,
     "pnl": 0.0,
     "pnl_pct": 0.0,
     "peak_pct": 0.0
   },
   "rules": {
     "daily_floor": 95000.0,
-    "daily_room": 5000.0,
+    "daily_room": 5814.63,
     "static_floor": 90000.0,
-    "max_room": 10000.0,
+    "max_room": 10814.63,
     "daily_loss_stop_pct": 3.0,
     "max_daily_loss_pct": 5.0,
     "max_overall_loss_pct": 10.0
   },
-  "position": null,
+  "position": {
+    "side": "SELL",
+    "entry": 4194.0,
+    "stop": 4234.66,
+    "lots": 0.3074,
+    "bars": 0,
+    "be": false,
+    "risk_usd": 1250.0
+  },
   "stats": {
     "n_trades": 0,
     "wins": 0,
@@ -54,8 +62,20 @@
     "worst_r": 0.0
   },
   "trades": [],
-  "equity_curve": [],
-  "events": [],
+  "equity_curve": [
+    [
+      "2026-06-19 03:00:00+00:00",
+      0.815
+    ]
+  ],
+  "events": [
+    {
+      "kind": "opened",
+      "title": "SELL XAUUSD @ 4194.00",
+      "detail": "stop 4234.66 | risk $1,250 (1.25%) | 0.307 lots",
+      "ts": "2026-06-20T12:37:05.245621+00:00"
+    }
+  ],
   "phase_history": [],
   "strategy": {
     "rule": "mom_breakout",

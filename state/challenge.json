@@ -1,0 +1,33 @@
+{
+  "brand": "Azalyst Montecarlo",
+  "tagline": "Monte-Carlo-validated gold 2-step engine",
+  "challenge_start": "2026-06-20",
+  "initial_balance": 100000.0,
+  "phase": "phase1",
+  "phase_num": 1,
+  "phase_start_iso": null,
+  "balance": 100000.0,
+  "equity": 100000.0,
+  "peak_balance": 100000.0,
+  "last_bar_iso": null,
+  "day_key": null,
+  "day_anchor": 100000.0,
+  "trades_today": 0,
+  "phase_trading_days": [],
+  "position": null,
+  "trades": [],
+  "equity_curve": [],
+  "stats": {
+    "n_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "win_rate": 0.0,
+    "gross_win": 0.0,
+    "gross_loss": 0.0,
+    "best_r": 0.0,
+    "worst_r": 0.0
+  },
+  "phase_history": [],
+  "events": [],
+  "updated_iso": null
+}

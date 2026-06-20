@@ -1,0 +1,10 @@
+symbol,rule,params,score,train_expR,h1_expR,h2_expR,train_n,gate
+XAU/USD,mom_breakout,{'thr': 0.05},0.36601239545903264,0.021,0.007,0.004,300,True
+XAG/USD,mom_breakout,{'thr': 0.05},-1000000000.0,-0.209,-0.187,-0.308,297,False
+EUR/USD,mom_breakout,{'thr': 0.05},-1000000000.0,-0.205,-0.177,-0.259,321,False
+GBP/USD,mom_breakout,{'thr': 0.05},-1000000000.0,-0.26,-0.29,-0.214,331,False
+USD/JPY,mom_breakout,{'thr': 0.05},-1000000000.0,-0.031,-0.035,-0.045,316,False
+AUD/USD,mom_breakout,{'thr': 0.05},-1000000000.0,-0.29,-0.23,-0.371,329,False
+USTEC.v,mom_breakout,{'thr': 0.05},-1000000000.0,-0.023,-0.047,-0.007,338,False
+DJ30,mom_breakout,{'thr': 0.05},-1000000000.0,0.106,-0.178,0.469,351,False
+US500,mom_breakout,{'thr': 0.05},-1000000000.0,-0.013,-0.066,0.038,340,False

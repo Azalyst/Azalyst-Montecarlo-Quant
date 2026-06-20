@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 venv/
 .env
-_extracted_docx.txt
-*.docx
-*.pdf
+.DS_Store
+
+# NOTE: state/ and docs/ are intentionally tracked — the GitHub Action commits
+# the live challenge state and dashboard feed back to the repo each tick.

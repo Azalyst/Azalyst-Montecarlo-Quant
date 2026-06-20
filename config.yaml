@@ -1,67 +1,57 @@
-# Azalyst FundingPips - Multi-Strategy Phase 1/2 Challenge Engine
-# 7 strategies running independent $100k FundingPips challenges
+# Azalyst Montecarlo — single-strategy FundingPips 2-Step engine
+# One Monte-Carlo-validated gold momentum strategy, paper-trading ONE $100k
+# FundingPips 2-step challenge live on GitHub Actions.
+#
+# The strategy, instrument and risk numbers here are NOT guesses — they are the
+# output of reverse-engineering 301,472 real trader trades and an out-of-sample
+# backtest + 2-step Monte-Carlo. See research/MASTER_REPORT.md.
+
+brand:
+  name: "Azalyst Montecarlo"
+  tagline: "Monte-Carlo-validated gold 2-step engine"
 
 account:
   size: 100000.0
-  max_daily_loss: 5000.0       # 5%
-  max_overall_loss: 10000.0    # 10%
-  profit_target_pct: 8.0       # Phase 1: +8% to pass
-  phase2_target_pct: 5.0       # Phase 2: +5% to pass
-  daily_reset_utc_hour: 22
-  challenge_start: "2026-06-11"   # Day 1
+  profit_target_p1_pct: 8.0      # Phase 1: +8%
+  profit_target_p2_pct: 5.0      # Phase 2: +5%
+  max_daily_loss_pct: 5.0        # hard line
+  max_overall_loss_pct: 10.0     # hard line, STATIC (floor fixed at 90k)
+  min_trading_days: 3
+  daily_reset_utc_hour: 22       # FundingPips day rolls ~22:00 UTC (5pm ET)
+  challenge_start: "2026-06-20"
 
+# The single instrument the data actually supports an edge on.
+instrument:
+  symbol: "XAUUSD"
+  source: yfinance
+  ticker: "GC=F"                 # gold futures ~= spot; scale-invariant strategy
+  interval: "1h"
+  lot_units: 100                 # 1 lot = 100 oz -> $1 move = $100/lot
+  digits: 2
+  min_stop: 2.5                  # floor on stop distance (price units)
+
+# Selected by the stability gate (positive expectancy in BOTH train halves AND
+# out-of-sample). thr = breakout proximity in ATR units.
+strategy:
+  rule: "mom_breakout"
+  params: {thr: 0.05}
+  atr_period: 14
+  atr_stop_mult: 2.0             # initial stop = entry -/+ 2*ATR
+  trail_mult: 3.0                # trailing stop width (ATR)
+  breakeven_at_r: 1.0            # move stop to BE after +1R
+  time_stop_bars: 48             # force-exit after 48 H1 bars (~2 days)
+  rr_target_display: 3.0         # informational target shown in alerts
+
+# Phase-aware risk engine. Calibrated by the Monte-Carlo risk sweep:
+# 0.5–0.75% per trade -> ~88% full-pass, ~0% daily-bust.
 risk:
-  risk_per_trade_pct: 1.0
-  safety_buffer: 0.90
-  max_leverage: 30
-
-instruments:
-  EURUSD:  {source: yfinance, ticker: "EURUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0010}
-  GBPUSD:  {source: yfinance, ticker: "GBPUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0010}
-  AUDUSD:  {source: yfinance, ticker: "AUDUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0008}
-  NZDUSD:  {source: yfinance, ticker: "NZDUSD=X", asset: fx,     value_per_point: 1.0, lot_units: 100000, pip: 0.0001, digits: 5, min_stop: 0.0008}
-  XAUUSD:  {source: yfinance, ticker: "GC=F",     asset: metal,  value_per_point: 1.0, lot_units: 100,    pip: 0.1,    digits: 2, min_stop: 2.5}
-  XAGUSD:  {source: yfinance, ticker: "SI=F",     asset: metal,  value_per_point: 1.0, lot_units: 5000,   pip: 0.01,   digits: 3, min_stop: 0.10}
-  NAS100:  {source: yfinance, ticker: "NQ=F",     asset: index,  value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 25.0}
-  SP500:   {source: yfinance, ticker: "ES=F",     asset: index,  value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 8.0}
-  BTCUSD:  {source: bybit,    ticker: "BTCUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 1.0,    digits: 2, min_stop: 60.0}
-  ETHUSD:  {source: bybit,    ticker: "ETHUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 0.1,    digits: 2, min_stop: 4.0}
-  XRPUSD:  {source: bybit,    ticker: "XRPUSDT",  asset: crypto, value_per_point: 1.0, lot_units: 1,      pip: 0.0001, digits: 4, min_stop: 0.004}
-
-strategies:
-  rsi:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, XAUUSD, NAS100, SP500, BTCUSD, ETHUSD]
-    interval: "1d"
-  ema5:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, XAUUSD, NAS100]
-    interval_sell: "5m"
-    interval_buy: "15m"
-  eth_blueprint:
-    enabled: true
-    instruments: [ETHUSD]
-    interval: "15m"
-    bias_interval: "4h"
-    session: asia
-  smt_divergence:
-    enabled: true
-    pair: [BTCUSD, ETHUSD]
-    interval: "5m"
-  jadecap:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, NAS100, SP500]
-    interval: "15m"
-    session: ny
-  quantx:
-    enabled: true
-    instruments: [BTCUSD]
-    interval: "15m"
-
-  rebel_funding:
-    enabled: true
-    instruments: [EURUSD, GBPUSD, XAUUSD, NAS100, SP500, BTCUSD, ETHUSD]
-    interval: "1h"
+  phase1_risk_pct: 0.75
+  phase2_risk_pct: 0.50
+  daily_loss_stop_pct: 3.0       # stop trading for the day at -3% (buffer below 5%)
+  total_dd_brake_pct: 7.0        # stand down once down 7% (buffer below 10%)
+  max_trades_per_day: 4
+  lockin_band_pct: 1.5           # half size within 1.5% of the phase target
 
 discord:
+  enabled: true
   user_id: "1363959528194052118"

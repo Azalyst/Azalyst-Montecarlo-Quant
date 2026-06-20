@@ -33,6 +33,20 @@ body{background:#000;font-family:'Courier New',monospace;color:#ff6600;overflow-
 .regime-v{font-size:14px;font-weight:700;color:#fff}
 .regime-tag{margin-left:auto;padding:6px 14px;font-size:9px;color:#ff9900}
 
+/* ── TWO-STEP JOURNEY ── */
+.journey{display:flex;align-items:stretch;background:#070707;border-bottom:1px solid #333}
+.jstep{flex:1;padding:7px 14px;border-right:1px solid #161616;display:flex;flex-direction:column;gap:2px}
+.jstep .jn{font-size:8px;color:#555;text-transform:uppercase;letter-spacing:.5px}
+.jstep .jt{font-size:15px;font-weight:700;color:#fff}
+.jstep .js{font-size:9px;font-weight:700}
+.jstep.done{background:#06150c}
+.jstep.active{background:#160b00;box-shadow:inset 0 0 0 1px #ff6600}
+.jstep.failed{background:#160404;box-shadow:inset 0 0 0 1px #cc2200}
+.jstep.locked{opacity:.4}
+.jarrow{display:flex;align-items:center;padding:0 7px;color:#444;font-size:13px}
+.jgoal{margin-left:auto;padding:7px 16px;text-align:right;font-size:9px;color:#888;display:flex;flex-direction:column;justify-content:center;border-left:1px solid #1a1a1a}
+.jgoal b{color:#ff9900;font-size:15px}
+
 /* ── MAIN GRID ── */
 .main{display:grid;gap:2px;background:#333;padding:2px}
 .grid-3{grid-template-columns:1fr 1fr 1fr}
@@ -135,6 +149,9 @@ canvas{width:100%;height:240px;display:block;background:#050505}
   <span class="regime-tag" id="b-start">—</span>
 </div>
 
+<!-- TWO-STEP JOURNEY: must pass BOTH phases -->
+<div class="journey" id="journey"></div>
+
 <!-- ════ DASHBOARD PAGE ════ -->
 <div class="page active" id="DASH">
   <div class="main grid-3">
@@ -223,7 +240,8 @@ canvas{width:100%;height:240px;display:block;background:#050505}
     <div class="panel-header"><span>HOW THIS WAS BUILT</span><span class="cmd">MONTE-CARLO</span></div>
     <p><b>One strategy the data earned.</b> Reverse-engineered from <span class="hl">301,472 real prop-firm trades</span>: every trader-month was replayed through the exact FundingPips 2-step rules. The finding — traders fail on the <span class="hl">5% daily line</span>, not the target; <span class="hl">12.5%</span> of the biggest winners would have busted. The separator between passers and busters is <span class="hl">worst-trade size</span>, not style. So the whole edge is risk control.</p>
     <p><b>Instrument:</b> Gold (XAU/USD H1) — the only instrument whose edge survived both halves of a training window <span class="hl">and</span> a held-out out-of-sample test (PF 1.46, +27.5%, 7.5% max DD). A single rule across 9 instruments loses; FX & indices over-fit.</p>
-    <p><b>Entry:</b> momentum breakout (within 0.05·ATR of the prior 20-bar high in an uptrend). <b>Exit:</b> 2·ATR stop → break-even at +1R → 3·ATR trail → 48-bar time stop. <b>Sizing:</b> 0.75% (P1) / 0.50% (P2), calibrated by a 2-step Monte-Carlo: <span class="hl">~88% full-pass, ~0% daily-bust</span>.</p>
+    <p><b>Entry:</b> momentum breakout (within 0.05·ATR of the prior 20-bar high in an uptrend). <b>Exit:</b> 2·ATR stop → break-even at +1R → 3·ATR trail → 48-bar time stop.</p>
+    <p><b>Pass BOTH phases.</b> The challenge requires Phase 1 (+8%) <span class="hl">and</span> Phase 2 (+5%). Sizing is calibrated for the <span class="hl">joint</span> objective, not either phase alone — a 2-D Monte-Carlo over (P1 risk × P2 risk) lands on <span class="hl">0.75% (P1) / 0.50% (P2)</span>: P1 pass ~92%, P2 pass ~95%, so <span class="hl">~87% pass both</span> with bust risk well under control. Per-trade risk is kept small precisely because bust risk compounds across two phases.</p>
     <p style="color:#666">Method &amp; figures: <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/MASTER_REPORT.md">MASTER_REPORT</a> · <a href="https://github.com/Azalyst/Azalyst-Montecarlo-Quant/blob/main/research/PLAYBOOK.md">PLAYBOOK</a>. Paper-traded live on GitHub Actions vs the exact FundingPips rules. The ~88% reflects a favourable gold regime — research deliverable, not financial advice.</p>
   </div></div>
 </div>
@@ -290,6 +308,8 @@ async function load(){
   $('b-dstop').textContent=r.daily_loss_stop_pct+'%';
   $('b-start').textContent='SINCE '+(c.start||'');
 
+  renderJourney(s);
+
   // challenge panel
   $('h-phase').textContent=c.phase==='phase1'?'P1':c.phase==='phase2'?'P2':c.phase.toUpperCase();
   $('d-balance').textContent=money(a.balance);
@@ -345,6 +365,27 @@ async function load(){
   ).join(''):'<tr><td colspan="4" class="mut">no phase transitions yet</td></tr>';
 
   drawChart(s.equity_curve||[], c.target_pct);
+}
+
+function renderJourney(s){
+  const c=s.challenge, hist=s.phase_history||[];
+  const passed=new Set(hist.filter(h=>(h.result||'').includes('PASS')).map(h=>h.phase));
+  const failed=hist.find(h=>(h.result||'').includes('FAIL'));
+  const cur=c.phase;
+  const steps=[['phase1','PHASE 1','+8%'],['phase2','PHASE 2','+5%'],['funded','FUNDED','PAYOUT']];
+  let html='';
+  steps.forEach(([key,label,tgt],i)=>{
+    let cl='locked',badge='LOCKED',bc='mut';
+    if(passed.has(key)){cl='done';badge='✓ PASSED';bc='up';}
+    else if(failed&&failed.phase===key){cl='failed';badge='✗ FAILED';bc='dn';}
+    else if(cur===key){cl='active';bc='neu';
+      badge=key==='funded'?'● LIVE · PAYOUTS':('● ACTIVE · '+c.progress_pct.toFixed(0)+'% to '+tgt);}
+    html+=`<div class="jstep ${cl}"><span class="jn">${label}</span><span class="jt">${tgt}</span>`+
+          `<span class="js ${bc}">${badge}</span></div>`;
+    if(i<steps.length-1)html+='<div class="jarrow">▶</div>';
+  });
+  html+=`<div class="jgoal">PASS <b>BOTH</b> → FUNDED<br><span class="mut">~87% simulated full-pass</span></div>`;
+  $('journey').innerHTML=html;
 }
 
 function gauge(prefix,room,budget){

@@ -42,8 +42,10 @@ strategy:
   time_stop_bars: 48             # force-exit after 48 H1 bars (~2 days)
   rr_target_display: 3.0         # informational target shown in alerts
 
-# Phase-aware risk engine. Calibrated by the Monte-Carlo risk sweep:
-# 0.5–0.75% per trade -> ~88% full-pass, ~0% daily-bust.
+# Phase-aware risk engine. The challenge requires passing BOTH phases, so sizing
+# is calibrated for the JOINT objective P(pass P1) x P(pass P2) via a 2-D
+# Monte-Carlo (P1 risk x P2 risk). Optimum: 0.75% / 0.50% -> P1 ~92%, P2 ~95%,
+# ~87% pass both. Risk is kept small because bust risk compounds over two phases.
 risk:
   phase1_risk_pct: 0.75
   phase2_risk_pct: 0.50

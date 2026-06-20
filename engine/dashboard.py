@@ -9,6 +9,7 @@ import os
 import pandas as pd
 
 from .risk import RiskConfig, RiskEngine
+from .challenge import attempt_stats
 
 
 def build_status(state: dict, cfg: dict) -> dict:
@@ -45,12 +46,16 @@ def build_status(state: dict, cfg: dict) -> dict:
             "be": pos["be"], "risk_usd": round(pos["risk_usd"], 2),
         }
 
+    mode = state.get("mode", "safe")
+    astats = attempt_stats(state)
     return {
         "brand": state.get("brand", "Azalyst Montecarlo Quant"),
         "tagline": state.get("tagline", ""),
         "updated_iso": state.get("updated_iso"),
         "updated": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M UTC"),
         "instrument": cfg["instrument"]["symbol"],
+        "mode": mode,
+        "attempts": {**astats, "log": state.get("attempts", [])[:12]},
         "challenge": {
             "phase": phase,
             "phase_num": state.get("phase_num", 1),
@@ -87,8 +92,8 @@ def build_status(state: dict, cfg: dict) -> dict:
         "phase_history": state.get("phase_history", []),
         "strategy": {
             "rule": cfg["strategy"]["rule"], "params": cfg["strategy"]["params"],
-            "p1_risk_pct": cfg["risk"]["phase1_risk_pct"],
-            "p2_risk_pct": cfg["risk"]["phase2_risk_pct"],
+            "p1_risk_pct": rc.phase1_risk * 100,   # reflects the active mode
+            "p2_risk_pct": rc.phase2_risk * 100,
         },
     }
 

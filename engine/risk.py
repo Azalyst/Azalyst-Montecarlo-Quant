@@ -26,7 +26,9 @@ class RiskConfig:
 
     @classmethod
     def from_yaml(cls, cfg: dict):
-        a, r, s = cfg["account"], cfg["risk"], cfg["strategy"]
+        a = cfg["account"]
+        # aggressive mode swaps in the fast-pass risk band
+        r = cfg["aggressive"] if cfg.get("mode") == "aggressive" and "aggressive" in cfg else cfg["risk"]
         return cls(
             initial_balance=a["size"],
             phase1_risk=r["phase1_risk_pct"] / 100,

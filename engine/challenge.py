@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import datetime as dt
+import numpy as np
 import pandas as pd
 
 from .risk import RiskConfig, RiskEngine
@@ -43,6 +44,10 @@ def fresh_state(cfg: dict) -> dict:
         "tagline": cfg["brand"]["tagline"],
         "challenge_start": a["challenge_start"],
         "initial_balance": B0,
+        "mode": cfg.get("mode", "safe"),
+        "attempt_num": 1,
+        "attempt_start_iso": None,
+        "attempts": [],            # log of finished attempts: {n, result, phase, days, end}
         "phase": "phase1",
         "phase_num": 1,
         "phase_start_iso": None,
@@ -63,6 +68,44 @@ def fresh_state(cfg: dict) -> dict:
         "events": [],
         "updated_iso": None,
     }
+
+
+MAX_ATTEMPTS_KEPT = 60
+
+
+def _reset_for_new_attempt(state: dict, ts):
+    """Aggressive mode: wipe per-attempt trading state, keep the attempts log,
+    and start a fresh Phase-1 account on the next bar."""
+    B0 = state["initial_balance"]
+    state["attempt_num"] += 1
+    state["attempt_start_iso"] = str(ts)
+    state.update(phase="phase1", phase_num=1, balance=B0, equity=B0, peak_balance=B0,
+                 day_anchor=B0, trades_today=0, phase_trading_days=[], position=None,
+                 phase_start_iso=str(ts))
+
+
+def _record_attempt(state: dict, result: str, phase_at_end: str, ts):
+    start = state.get("attempt_start_iso") or state.get("phase_start_iso")
+    days = None
+    if start:
+        try:
+            days = round((pd.Timestamp(ts) - pd.Timestamp(start)).total_seconds() / 86400, 1)
+        except Exception:
+            days = None
+    state["attempts"].insert(0, {"n": state["attempt_num"], "result": result,
+                                 "phase": phase_at_end, "days": days, "end": str(ts)})
+    state["attempts"] = state["attempts"][:MAX_ATTEMPTS_KEPT]
+
+
+def attempt_stats(state: dict) -> dict:
+    a = state.get("attempts", [])
+    done = len(a)
+    passed = sum(1 for x in a if x["result"] == "PASSED")
+    pass_days = [x["days"] for x in a if x["result"] == "PASSED" and x["days"] is not None]
+    return {"attempts": done, "passed": passed, "busted": done - passed,
+            "pass_rate": round(passed / done * 100, 0) if done else 0.0,
+            "median_pass_days": round(float(np.median(pass_days)), 1) if pass_days else None,
+            "current_attempt": state.get("attempt_num", 1)}
 
 
 def _day_key(ts: pd.Timestamp, reset_hour: int) -> str:
@@ -100,11 +143,17 @@ def tick(state: dict, signals: pd.DataFrame, cfg: dict) -> tuple[dict, list[Even
     reset_hour = int(cfg["account"]["daily_reset_utc_hour"])
     cost_per_unit = float(inst.get("cost_per_unit", 0.30))
     min_days = int(cfg["account"]["min_trading_days"])
+    agg = cfg.get("aggressive", {}) if cfg.get("mode") == "aggressive" else {}
+    auto_reset = bool(agg.get("auto_reset_on_bust"))
+    perpetual = bool(agg.get("perpetual"))
     events: list[Event] = []
+
+    if state.get("attempt_start_iso") is None:
+        state["attempt_start_iso"] = state.get("phase_start_iso")
 
     if state["phase"] in ("failed",):
         state["updated_iso"] = pd.Timestamp.now(tz="UTC").isoformat()
-        return state, events  # terminal until manual reset
+        return state, events  # terminal until manual reset (safe mode only)
 
     # which bars are new?
     last_iso = state["last_bar_iso"]
@@ -147,18 +196,33 @@ def tick(state: dict, signals: pd.DataFrame, cfg: dict) -> tuple[dict, list[Even
         if pos is not None:
             pos["bars"] += 1
             d = pos["dir"]
+            # scale-in (aggressive): add a tranche once +add_at_r on the BASE entry,
+            # move combined stop to base entry (house money funds the add). Once.
+            if agg.get("scale_in") and not pos.get("added"):
+                fav_base = (cl - pos.get("base_entry", pos["entry"])) * d
+                if fav_base >= pos.get("base_risk", pos["init_risk"]) * float(agg.get("add_at_r", 1.0)):
+                    add = pos["size"]
+                    new_size = pos["size"] + add
+                    pos["entry"] = (pos["entry"] * pos["size"] + cl * add) / new_size
+                    pos["size"] = new_size
+                    pos["lots"] = pos["lots"] * new_size / (new_size - add)
+                    pos["stop"] = pos.get("base_entry", pos["entry"])
+                    pos["added"] = True; pos["be"] = True
+                    events.append(Event("opened", f"Scaled IN {inst['symbol']} @ {cl:.2f}",
+                                        f"added tranche on +1R winner; combined {pos['lots']:.3f} lots, stop at base"))
             fav = (cl - pos["entry"]) * d
             if (not pos["be"]) and fav >= pos["init_risk"] * strat["breakeven_at_r"]:
                 pos["stop"] = pos["entry"]; pos["be"] = True
             new_trail = cl - d * strat["trail_mult"] * atr
             pos["stop"] = max(pos["stop"], new_trail) if d > 0 else min(pos["stop"], new_trail)
 
+            tstop = int(agg.get("time_stop_bars", strat["time_stop_bars"]))
             exit_price = None; reason = None
             if d > 0 and lo <= pos["stop"]:
                 exit_price = min(pos["stop"], o) if o < pos["stop"] else pos["stop"]; reason = "stop"
             elif d < 0 and hi >= pos["stop"]:
                 exit_price = max(pos["stop"], o) if o > pos["stop"] else pos["stop"]; reason = "stop"
-            elif pos["bars"] >= strat["time_stop_bars"]:
+            elif pos["bars"] >= tstop:
                 exit_price = cl; reason = "time"
 
             if exit_price is not None:
@@ -187,13 +251,21 @@ def tick(state: dict, signals: pd.DataFrame, cfg: dict) -> tuple[dict, list[Even
         daily_floor = risk.daily_floor(state["day_anchor"])
         if eq <= static_floor + 1e-9 or eq <= daily_floor + 1e-9:
             kind = "max_dd" if eq <= static_floor + 1e-9 else "daily_dd"
+            phase_at = state["phase"]
             state["position"] = None
-            state["phase_history"].append({"phase": state["phase"], "result": f"FAILED ({kind})",
+            line = "10% static" if kind == "max_dd" else "5% daily"
+            if auto_reset:
+                _record_attempt(state, "BUST", phase_at, ts)
+                n = state["attempt_num"]
+                events.append(Event("bust", f"Attempt #{n} BUST ({kind})",
+                                    f"Breached the {line} line; starting attempt #{n+1}."))
+                _reset_for_new_attempt(state, ts)
+                continue  # keep trading the next bars on a fresh attempt
+            state["phase_history"].append({"phase": phase_at, "result": f"FAILED ({kind})",
                                            "balance": round(state["balance"], 2), "date": str(ts)})
             state["phase"] = "failed"
             events.append(Event("bust", f"CHALLENGE FAILED — {kind}",
-                                f"Equity ${eq:,.0f} breached the "
-                                f"{'10% static' if kind=='max_dd' else '5% daily'} line."))
+                                f"Equity ${eq:,.0f} breached the {line} line."))
             break
 
         # ---- target check (on realized balance) ----
@@ -201,6 +273,15 @@ def tick(state: dict, signals: pd.DataFrame, cfg: dict) -> tuple[dict, list[Even
         target = _phase_target(state, rc)
         if state["balance"] >= target - 1e-9 and len(state["phase_trading_days"]) >= min_days:
             _advance_phase(state, rc, ts, events)
+            if state["phase"] == "funded" and perpetual:
+                # full two-step passed -- log the winning attempt and (perpetual
+                # demo) start a fresh attempt so the cadence keeps showing.
+                _record_attempt(state, "PASSED", "funded", ts)
+                st = attempt_stats(state)
+                events.append(Event("phase_pass", f"Attempt #{state['attempt_num']} PASSED 🏆 FUNDED",
+                                    f"Running: {st['passed']}/{st['attempts']} passed "
+                                    f"({st['pass_rate']:.0f}%). Starting attempt #{state['attempt_num']+1}."))
+                _reset_for_new_attempt(state, ts)
             if state["phase"] == "passed_all":
                 break
             continue  # fresh phase; don't open on the same bar
@@ -216,6 +297,7 @@ def tick(state: dict, signals: pd.DataFrame, cfg: dict) -> tuple[dict, list[Even
                     "dir": d, "entry": o, "stop": o - d * stop_dist, "init_risk": stop_dist,
                     "size": dec.size_units, "lots": dec.lots, "risk_usd": dec.risk_amount,
                     "be": False, "bars": 0, "opened_iso": str(ts),
+                    "base_entry": o, "base_risk": stop_dist, "added": False,
                 }
                 state["trades_today"] += 1
                 if dk not in state["phase_trading_days"]:

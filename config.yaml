@@ -10,6 +10,13 @@ brand:
   name: "Azalyst Montecarlo Quant"
   tagline: "Monte-Carlo-validated gold 2-step quant engine"
 
+# Trading mode:
+#   safe       = high pass-rate grind (~87% pass both, but ~7 weeks)
+#   aggressive = monster-style FAST pass (~6 trading days / 1-2 weeks when it hits,
+#                ~50% per attempt, auto-resets and keeps trying on bust). This is
+#                how the real >100%/month leaderboard traders passed in ~2 days.
+mode: aggressive
+
 account:
   size: 100000.0
   profit_target_p1_pct: 8.0      # Phase 1: +8%
@@ -53,6 +60,29 @@ risk:
   total_dd_brake_pct: 7.0        # stand down once down 7% (buffer below 10%)
   max_trades_per_day: 4
   lockin_band_pct: 1.5           # half size within 1.5% of the phase target
+
+# AGGRESSIVE / fast-pass band (used when mode: aggressive). Calibrated on the
+# fast-pass frontier: ~1.75% risk -> median 7 trading days to pass P1, ~71% of
+# passes within 2 weeks, ~55% pass per attempt, ~36% bust. Lets winners run, no
+# lock-in, no profit cap. On bust it AUTO-RESETS and starts a fresh attempt
+# (the multi-attempt monster model). Daily $5k line is the only governor.
+# Verified on the fast-pass frontier (out-of-sample, 4000-path bootstrap):
+# scale-in at 1.25% beats flat 1.75% -- same ~7-trading-day speed, but full-pass
+# 66% vs 55% and bust 23% vs 36%, by adding a tranche on a winner (house money).
+# HONEST haircut: the 66% is a favourable gold-trend figure; realistic ~40% per
+# attempt, <=30% in a choppy market. It's a TREND-RIDER -- budget 2-3 attempts.
+aggressive:
+  phase1_risk_pct: 1.25
+  phase2_risk_pct: 0.85
+  daily_loss_stop_pct: 4.5       # near the 5% line -- aggressive on the day
+  total_dd_brake_pct: 9.5        # near the 10% line
+  max_trades_per_day: 3
+  lockin_band_pct: 0.0           # NO lock-in -- let it run to target full size
+  scale_in: true                 # add a tranche at +1R (the monster mechanic)
+  add_at_r: 1.0
+  time_stop_bars: 96             # let runners breathe (~4 days)
+  auto_reset_on_bust: true       # bust -> log attempt, reset, keep trying
+  perpetual: true                # also reset after reaching FUNDED (keep demonstrating)
 
 discord:
   enabled: true

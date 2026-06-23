@@ -3,16 +3,16 @@
   "tagline": "Monte-Carlo-validated gold 2-step quant engine",
   "mode": "fleet",
   "instrument": "XAUUSD",
-  "gold_price": 4117.3,
+  "gold_price": 4137.7,
   "market": {
-    "price": 4117.3,
-    "atr": 32.36,
+    "price": 4137.7,
+    "atr": 29.44,
     "trend": "DOWN",
-    "rsi": 29.0,
-    "dist_hi_atr": 3.6,
-    "dist_lo_atr": -0.33,
-    "change_24h_pct": -2.33,
-    "bar_time": "2026-06-23 07:00:00+00:00"
+    "rsi": 38.0,
+    "dist_hi_atr": 3.12,
+    "dist_lo_atr": 1.0,
+    "change_24h_pct": -2.09,
+    "bar_time": "2026-06-23 10:00:00+00:00"
   },
   "rules": {
     "p1": 8.0,
@@ -94,8 +94,8 @@
       "book": "MED"
     }
   ],
-  "updated_iso": "2026-06-23T08:05:38.993918+00:00",
-  "updated": "2026-06-23 08:05 UTC",
+  "updated_iso": "2026-06-23T11:41:54.000517+00:00",
+  "updated": "2026-06-23 11:41 UTC",
   "books": [
     {
       "name": "MED",
@@ -103,11 +103,11 @@
       "phase": "phase1",
       "phase_label": "Phase 1",
       "balance": 99338.0,
-      "equity": 100011.0,
+      "equity": 99723.0,
       "pnl_pct": -0.66,
       "progress_pct": 0.0,
       "target_pct": 8.0,
-      "days_running": 4.2,
+      "days_running": 4.3,
       "attempts": {
         "attempts": 0,
         "passed": 0,
@@ -275,6 +275,18 @@
         [
           "2026-06-23 07:00:00+00:00",
           0.011
+        ],
+        [
+          "2026-06-23 08:00:00+00:00",
+          -0.064
+        ],
+        [
+          "2026-06-23 09:00:00+00:00",
+          -0.311
+        ],
+        [
+          "2026-06-23 10:00:00+00:00",
+          -0.277
         ]
       ]
     },
@@ -284,11 +296,11 @@
       "phase": "phase1",
       "phase_label": "Phase 1",
       "balance": 99007.0,
-      "equity": 100014.0,
+      "equity": 99582.0,
       "pnl_pct": -0.99,
       "progress_pct": 0.0,
       "target_pct": 8.0,
-      "days_running": 4.2,
+      "days_running": 4.3,
       "attempts": {
         "attempts": 0,
         "passed": 0,
@@ -456,6 +468,18 @@
         [
           "2026-06-23 07:00:00+00:00",
           0.014
+        ],
+        [
+          "2026-06-23 08:00:00+00:00",
+          -0.098
+        ],
+        [
+          "2026-06-23 09:00:00+00:00",
+          -0.468
+        ],
+        [
+          "2026-06-23 10:00:00+00:00",
+          -0.418
         ]
       ]
     },
@@ -465,11 +489,11 @@
       "phase": "phase1",
       "phase_label": "Phase 1",
       "balance": 98511.0,
-      "equity": 100013.0,
+      "equity": 99369.0,
       "pnl_pct": -1.49,
       "progress_pct": 0.0,
       "target_pct": 8.0,
-      "days_running": 4.2,
+      "days_running": 4.3,
       "attempts": {
         "attempts": 0,
         "passed": 0,
@@ -637,6 +661,18 @@
         [
           "2026-06-23 07:00:00+00:00",
           0.013
+        ],
+        [
+          "2026-06-23 08:00:00+00:00",
+          -0.154
+        ],
+        [
+          "2026-06-23 09:00:00+00:00",
+          -0.707
+        ],
+        [
+          "2026-06-23 10:00:00+00:00",
+          -0.631
         ]
       ]
     }

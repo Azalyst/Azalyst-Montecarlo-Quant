@@ -38,17 +38,22 @@ class Notifier:
                  "phase_pass": GOLD, "bust": RED, "brake": ORANGE}.get(ev.kind, ORANGE)
         if ev.kind == "opened":
             d = ev.data
-            fields = [
-                {"name": "Side", "value": d["side"], "inline": True},
-                {"name": "Entry", "value": f"{d['entry']}", "inline": True},
-                {"name": "Stop", "value": f"{d['stop']}", "inline": True},
-                {"name": "Target", "value": f"{d['target']}", "inline": True},
-                {"name": "Size", "value": f"{d['lots']} lots", "inline": True},
-                {"name": "Risk", "value": f"${d['risk_usd']:,.0f} ({d['risk_pct']}%)", "inline": True},
-            ]
-            embed = {"title": ev.title, "color": color, "fields": fields,
-                     "footer": {"text": _footer(state)}}
-            self._send(self._ping() + f"**{d['side']}** signal — {ev.title}", embed)
+            try:
+                fields = [
+                    {"name": "Side", "value": d["side"], "inline": True},
+                    {"name": "Entry", "value": f"{d['entry']}", "inline": True},
+                    {"name": "Stop", "value": f"{d['stop']}", "inline": True},
+                    {"name": "Target", "value": f"{d['target']}", "inline": True},
+                    {"name": "Size", "value": f"{d['lots']} lots", "inline": True},
+                    {"name": "Risk", "value": f"${d['risk_usd']:,.0f} ({d['risk_pct']}%)", "inline": True},
+                ]
+                embed = {"title": ev.title, "color": color, "fields": fields,
+                         "footer": {"text": _footer(state)}}
+                self._send(self._ping() + f"**{d['side']}** signal — {ev.title}", embed)
+            except KeyError:
+                embed = {"title": ev.title, "description": ev.detail, "color": color,
+                         "footer": {"text": _footer(state)}}
+                self._send(self._ping() + ev.title, embed)
         else:
             embed = {"title": ev.title, "description": ev.detail, "color": color,
                      "footer": {"text": _footer(state)}}
